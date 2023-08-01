@@ -2,7 +2,7 @@
   <div
     class="login__wrapper d-flex align-items-center justify-content-center min-vh-100 p-3"
   >
-    <div class="login__card ">
+    <div class="login__card">
       <div class="login__logo d-flex align-items-center justify-content-center">
         <div class="d-flex me-2">
           <span></span>
@@ -12,12 +12,12 @@
         <h2 class="m-0">kanban</h2>
       </div>
       <div class="login__title">
-        <h5>Adventure starts here</h5>
-        <p>Make your app management easy and fun!</p>
+        <h5>Welcome to Kanban !</h5>
+        <p>Please sign-in to your account and start the adventure</p>
       </div>
-      <form >
+      <div class="form__wrapper">
         <div class="form__control">
-          <input class="form__input" type="mail" required />
+          <input class="form__input" type="mail" v-model="email" required />
           <label class="form__label">Email</label>
         </div>
         <div class="form__control">
@@ -31,14 +31,14 @@
           <label class="form__label">Password</label>
           <i
             class="far fa-eye-slash"
-            :class="{ 'fa-eye': showPassword, 'fa-eye-slash': !showPassword }"
+            :class="{ 'fa-eye': !showPassword, 'fa-eye-slash': showPassword }"
             @click="togglePassword"
           ></i>
         </div>
         <div class="forgot__pass">
           <RouterLink to="/forgot-password">Forgot Password?</RouterLink>
         </div>
-        <button class="loginBtn">LOGIN</button>
+        <button class="loginBtn" @click="login">LOGIN</button>
         <div class="register d-flex align-items-center justify-content-center">
           <span>New on our platform?</span>
           <RouterLink to="/register">Create an account</RouterLink>
@@ -59,19 +59,33 @@
             <i class="fa-brands fa-twitter"></i>
           </a>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
+
+const email = ref("");
 const password = ref("");
-
 const inputRef = ref(null);
-
 let showPassword = ref(false);
+
+
+const login = ()=>{
+  signInWithEmailAndPassword(getAuth(), email.value, password.value)
+    .then((data) => {
+      console.log('succes');
+    })
+    .catch(() => {
+      console.log("error");
+    });
+}
+
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
@@ -81,6 +95,9 @@ const togglePassword = () => {
     inputRef.value.type = "password";
   }
 };
+
+
+
 </script>
 
 <style lang="scss" scoped>
@@ -115,13 +132,13 @@ const togglePassword = () => {
     }
     .login__title {
       color: var(--white);
-      margin-block: 30px;
+      margin: 30px 0;
       p {
         margin: 0;
         color: var(--primary);
       }
     }
-    form {
+    .form__wrapper {
       display: flex;
       flex-direction: column;
       gap: 30px;
@@ -237,5 +254,44 @@ const togglePassword = () => {
       }
     }
   }
+}
+
+@media (max-width: 768px) {
+  // .login__wrapper {
+  //   .login__card {
+  //     padding: 20px;
+  //     .login__title {
+  //       p {
+  //         font-size: 14px;
+  //       }
+  //     }
+  //     form {
+  //       gap: 20px;
+  //       .form__control {
+  //         .form__label {
+  //           left: 10px;
+  //         }
+  //         .form__input {
+  //           height: 40px;
+  //           border-radius: 6px;
+  //           padding: 20px 10px;
+  //           font-size: 18px;
+  //           &:valid ~ .form__label,
+  //           &:focus ~ .form__label {
+  //             font-size: 12px;
+  //             padding: 0 3px;
+  //           }
+  //         }
+  //       }
+  //       .loginBtn {
+  //         padding: 5px;
+  //         border-radius: 6px;
+  //         &:hover {
+  //           box-shadow: -1px 3px 5px 2px rgba(102, 96, 195, 0.75);
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 }
 </style>

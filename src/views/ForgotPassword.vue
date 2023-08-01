@@ -2,6 +2,9 @@
   <div
     class="forgot__password d-flex align-items-center justify-content-center min-vh-100 p-3"
   >
+    <StatusModal v-if="showStatus">
+      <h5 class="modal__title">We have e-mailed you password reset link</h5>
+    </StatusModal>
     <div class="forgot__password-container">
       <div class="login__logo d-flex align-items-center justify-content-center">
         <div class="d-flex me-2">
@@ -22,10 +25,12 @@
         </p>
       </div>
       <div class="form__control">
-        <input class="form__input" type="mail" required />
+        <input class="form__input" v-model="resetMail" type="mail" required />
         <label class="form__label">Email</label>
       </div>
-      <button class="sendResetLinkBtn">Send Reset Link</button>
+      <button class="sendResetLinkBtn" @click="sendLink">
+        Send Reset Link
+      </button>
       <div class="back">
         <RouterLink to="/login">
           <i class="fa-solid fa-chevron-left"></i>Back to login</RouterLink
@@ -35,9 +40,33 @@
   </div>
 </template>
 
+<script setup>
+import { ref } from "vue";
+import StatusModal from "@/components/StatusModal.vue";
+
+let resetMail = ref("");
+const showStatus = ref(false);
+
+const sendLink = () => {
+  if (resetMail.value == "") {
+    return;
+  } else {
+    resetMail.value = "";
+    showStatus.value = true;
+    setTimeout(() => {
+      showStatus.value = false;
+    }, 1500);
+  }
+};
+</script>
+
 <style lang="scss" scoped>
+h1 {
+  color: white;
+}
 .forgot__password {
   background: var(--bg);
+  position: relative;
   .forgot__password-container {
     max-width: 448px;
     width: 100%;
@@ -151,5 +180,8 @@
       }
     }
   }
+}
+.modal__title {
+  color: var(--white);
 }
 </style>
