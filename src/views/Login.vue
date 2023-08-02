@@ -17,7 +17,12 @@
       </div>
       <div class="form__wrapper">
         <div class="form__control">
-          <input class="form__input" type="mail" v-model="email" required />
+          <input
+            class="form__input"
+            type="mail"
+            v-model="email"
+            :class="{ err__input: activeErr }"
+          />
           <label class="form__label">Email</label>
         </div>
         <div class="form__control">
@@ -26,7 +31,7 @@
             type="password"
             v-model="password"
             ref="inputRef"
-            required
+            :class="{ err__input: activeErr }"
           />
           <label class="form__label">Password</label>
           <i
@@ -37,6 +42,7 @@
         </div>
         <div class="forgot__pass">
           <RouterLink to="/forgot-password">Forgot Password?</RouterLink>
+          <p v-if="errMsg">{{ errMsg }}</p>
         </div>
         <button class="loginBtn" @click="login">LOGIN</button>
         <div class="register d-flex align-items-center justify-content-center">
@@ -66,27 +72,53 @@
 
 <script setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter } from "vue-router"; //import router
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {useCounterStore} from '@/stores/counter'
 
+const router = useRouter(); // get reference to our vue router
+const storeCount = useCounterStore() // get reference to our store
 
 const email = ref("");
 const password = ref("");
 const inputRef = ref(null);
 let showPassword = ref(false);
 
+let activeErr = ref(false); //Activate error input class
+const errMsg = ref(""); //Error message
 
-const login = ()=>{
-  signInWithEmailAndPassword(getAuth(), email.value, password.value)
+//Login button
+const login = () => {
+  signInWithEmailAndPassword(getAuth(), email.value, password.value, )
     .then((data) => {
-      console.log('succes');
+      // storeCount.token = data.user.accessToken
+      // storeCount.isLoggedIn = true
+      // localStorage.setItem("token", data.user.accessToken)
+      router.push("/home");
     })
-    .catch(() => {
-      console.log("error");
+    .catch((err) => {
+      switch (err.code) {
+        case "auth/invalid-email":
+          errMsg.value = "Invalid email";
+          activeErr.value = true;
+          break;
+        case "auth/user-not-found":
+          errMsg.value = "No account with that email was found";
+          activeErr.value = true;
+          break;
+        case "auth/wrong-password":
+          errMsg.value = "Invalid password";
+          activeErr.value = true;
+          break;
+        default:
+          errMsg.value = "Email or password was incorrect";
+          activeErr.value = true;
+          break;
+      }
     });
-}
+};
 
-
+//Show Password
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
   if (showPassword.value) {
@@ -95,9 +127,6 @@ const togglePassword = () => {
     inputRef.value.type = "password";
   }
 };
-
-
-
 </script>
 
 <style lang="scss" scoped>
@@ -179,6 +208,17 @@ const togglePassword = () => {
             z-index: 1;
           }
         }
+        .err__input {
+          border: 1px solid var(--red);
+          &:valid,
+          &:focus {
+            border: 1px solid var(--red);
+          }
+          &:valid ~ .form__label,
+          &:focus ~ .form__label {
+            color: var(--red);
+          }
+        }
         i {
           position: absolute;
           right: 20px;
@@ -189,7 +229,14 @@ const togglePassword = () => {
         }
       }
       .forgot__pass {
-        text-align: end;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        p {
+          color: var(--red);
+          font-size: 14px;
+          margin: 0;
+        }
         a {
           color: var(--primary);
         }

@@ -78,19 +78,20 @@
 <script setup>
 import StatusModal from "@/components/StatusModal.vue";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter } from "vue-router"; //import router
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 const showStatus = ref(false);
 
 const inputRef = ref(null);
 let showPassword = ref(false);
-const router = useRouter();
+const router = useRouter();  // get reference to our vue router
 
 const userName = ref("");
 const email = ref("");
 const password = ref("");
 
+//Register button
 const registerBtn = () => {
   createUserWithEmailAndPassword(getAuth(), email.value, password.value)
     .then((data) => {
@@ -104,7 +105,7 @@ const registerBtn = () => {
       console.log("error");
     });
 };
-
+//Show Password
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
   if (showPassword.value) {

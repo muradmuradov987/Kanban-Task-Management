@@ -1,7 +1,3 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-</script>
-
 <template>
   <!-- <header>
     <div class="wrapper">
@@ -15,4 +11,24 @@ import { RouterLink, RouterView } from 'vue-router'
   <RouterView />
 </template>
 
+<script setup>
+import { onMounted, ref } from "vue";
+import { useCounterStore } from "@/stores/counter";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+const storeCount = useCounterStore(); // get reference to our store
 
+let auth;
+onMounted(() => {
+  auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    console.log(user);
+    if (user) {
+      storeCount.isLoggedIn = true;
+    } else {
+      storeCount.isLoggedIn = false;
+    }
+  });
+});
+</script>
+
+<style scoped></style>
