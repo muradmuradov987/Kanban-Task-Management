@@ -1,15 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import HomeView from "../views/HomeView.vue";
-import Login from "../views/Login.vue";
-import SignUp from "../views/SignUp.vue";
-import ForgotPassword from "../views/ForgotPassword.vue";
-import Register from "../views/Register.vue";
-
-const isAuthenticated = () => {
-  const auth = getAuth();
-  return auth.currentUser !== null;
-};
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,34 +11,28 @@ const router = createRouter({
     {
       path: "/login",
       name: "login",
-      component: Login,
+      component: () => import("../views/Auth/Login.vue"),
     },
     {
       path: "/signUp",
       name: "signUp",
-      component: SignUp,
+      component: () => import("../views/Auth/SignUp.vue"),
     },
     {
       path: "/forgot-password",
       name: "forgotPassword",
-      component: ForgotPassword,
+      component: () => import("../views/Auth/ForgotPassword.vue"),
     },
     {
       path: "/register",
       name: "register",
-      component: Register,
+      component: () => import("../views/Auth/Register.vue"),
     },
 
     {
       path: "/home",
       name: "home",
-      component: HomeView,
-      meta: { requiresAuth: true },
-    },
-    {
-      path: "/about",
-      name: "about",
-      component: () => import("../views/AboutView.vue"),
+      component: () => import("../views/Home.vue"),
       meta: { requiresAuth: true },
     },
   ],

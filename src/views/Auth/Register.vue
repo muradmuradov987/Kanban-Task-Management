@@ -1,7 +1,12 @@
 <template>
-  <div
-    class="login__wrapper d-flex align-items-center justify-content-center min-vh-100 p-3"
-  >
+  <div class="login__wrapper">
+    <StatusModal v-if="showStatus">
+      <h5 class="modal__title">Successfull register</h5>
+      <p class="modal__text">
+        We have sent an activation link to your account to countinue with the
+        registration process.
+      </p>
+    </StatusModal>
     <div class="login__card">
       <div class="login__logo d-flex align-items-center justify-content-center">
         <div class="d-flex me-2">
@@ -12,26 +17,25 @@
         <h2 class="m-0">kanban</h2>
       </div>
       <div class="login__title">
-        <h5>Welcome to Kanban !</h5>
-        <p>Please sign-in to your account and start the adventure</p>
+        <h5>Adventure starts here</h5>
+        <p>Make your app management easy and fun!</p>
       </div>
       <div class="form__wrapper">
-        <div class="form__control">
-          <input
-            class="form__input"
-            type="mail"
-            v-model="email"
-            :class="{ err__input: activeErr }"
-          />
+        <div class="form__control" :class="{ err__input: activeErr }">
+          <input class="form__input" type="text" v-model="fullName" required />
+          <label class="form__label">Fullname</label>
+        </div>
+        <div class="form__control" :class="{ err__input: activeErr }">
+          <input class="form__input" type="mail" v-model="email" required />
           <label class="form__label">Email</label>
         </div>
-        <div class="form__control">
+        <div class="form__control" :class="{ err__input: activeErr }">
           <input
             class="form__input"
             type="password"
             v-model="password"
             ref="inputRef"
-            :class="{ err__input: activeErr }"
+            required
           />
           <label class="form__label">Password</label>
           <i
@@ -40,14 +44,11 @@
             @click="togglePassword"
           ></i>
         </div>
-        <div class="forgot__pass">
-          <RouterLink to="/forgot-password">Forgot Password?</RouterLink>
-          <p v-if="errMsg">{{ errMsg }}</p>
-        </div>
-        <button class="loginBtn" @click="login">LOGIN</button>
+        <p v-if="errMsg" class="err__msg">{{ errMsg }}</p>
+        <PrimaryBtn buttonWidth="100%" :onClick='registerBtn'>Sign Up</PrimaryBtn>
         <div class="register d-flex align-items-center justify-content-center">
-          <span>New on our platform?</span>
-          <RouterLink to="/register">Create an account</RouterLink>
+          <span>Already have an account?</span>
+          <RouterLink to="/login">Sign in instead</RouterLink>
         </div>
         <div class="hr">
           <hr />
@@ -67,55 +68,77 @@
         </div>
       </div>
     </div>
+    <div class="page__img d-none d-lg-block">
+      <img src="../../assets/img/signup.svg" alt="login" />
+    </div>
   </div>
 </template>
 
 <script setup>
+import StatusModal from "@/components/Modals/StatusModal.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router"; //import router
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import {useCounterStore} from '@/stores/counter'
+import PrimaryBtn from "@/components/Buttons/PrimaryBtn.vue";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 
-const router = useRouter(); // get reference to our vue router
-const storeCount = useCounterStore() // get reference to our store
-
-const email = ref("");
-const password = ref("");
-const inputRef = ref(null);
-let showPassword = ref(false);
+const showStatus = ref(false);
 
 let activeErr = ref(false); //Activate error input class
 const errMsg = ref(""); //Error message
 
-//Login button
-const login = () => {
-  signInWithEmailAndPassword(getAuth(), email.value, password.value, )
-    .then((data) => {
-      // storeCount.token = data.user.accessToken
-      // storeCount.isLoggedIn = true
-      // localStorage.setItem("token", data.user.accessToken)
-      router.push("/home");
-    })
-    .catch((err) => {
-      switch (err.code) {
-        case "auth/invalid-email":
-          errMsg.value = "Invalid email";
-          activeErr.value = true;
-          break;
-        case "auth/user-not-found":
-          errMsg.value = "No account with that email was found";
-          activeErr.value = true;
-          break;
-        case "auth/wrong-password":
-          errMsg.value = "Invalid password";
-          activeErr.value = true;
-          break;
-        default:
-          errMsg.value = "Email or password was incorrect";
-          activeErr.value = true;
-          break;
-      }
-    });
+const inputRef = ref(null);
+let showPassword = ref(false);
+const router = useRouter(); // get reference to our vue router
+
+const fullName = ref("");
+const email = ref("");
+const password = ref("");
+
+//Register button
+const registerBtn = () => {
+  if (fullName.value == "" || email.value == "" || password.value == "") {
+    activeErr.value = true;
+    errMsg.value = "Email or password was incorrect";
+  } else {
+    createUserWithEmailAndPassword(getAuth(), email.value, password.value)
+      .then((data) => {
+        sendEmailVerification(getAuth().currentUser).then(() => {});
+        fullName.value = "";
+        email.value = "";
+        password.value = "";
+        activeErr.value = false;
+        errMsg.value = "";
+        showStatus.value = true;
+
+        setTimeout(() => {
+          showStatus.value = false;
+        }, 2500);
+      })
+      .catch((err) => {
+        switch (err.code) {
+          case "auth/invalid-email":
+            errMsg.value = "Invalid email";
+            activeErr.value = true;
+            break;
+          case "auth/wrong-password":
+            errMsg.value = "Invalid password";
+            activeErr.value = true;
+            break;
+          case "auth/weak-password":
+            errMsg.value = "Password should be at least 6 characters";
+            activeErr.value = true;
+            break;
+          default:
+            errMsg.value = "Email or password was incorrect";
+            activeErr.value = true;
+            break;
+        }
+      });
+  }
 };
 
 //Show Password
@@ -132,6 +155,12 @@ const togglePassword = () => {
 <style lang="scss" scoped>
 .login__wrapper {
   background: var(--bg);
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
   .login__card {
     max-width: 448px;
     width: 100%;
@@ -161,7 +190,7 @@ const togglePassword = () => {
     }
     .login__title {
       color: var(--white);
-      margin: 30px 0;
+      margin-block: 30px;
       p {
         margin: 0;
         color: var(--primary);
@@ -208,17 +237,7 @@ const togglePassword = () => {
             z-index: 1;
           }
         }
-        .err__input {
-          border: 1px solid var(--red);
-          &:valid,
-          &:focus {
-            border: 1px solid var(--red);
-          }
-          &:valid ~ .form__label,
-          &:focus ~ .form__label {
-            color: var(--red);
-          }
-        }
+
         i {
           position: absolute;
           right: 20px;
@@ -229,14 +248,7 @@ const togglePassword = () => {
         }
       }
       .forgot__pass {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        p {
-          color: var(--red);
-          font-size: 14px;
-          margin: 0;
-        }
+        text-align: end;
         a {
           color: var(--primary);
         }
@@ -301,44 +313,34 @@ const togglePassword = () => {
       }
     }
   }
+  .page__img {
+    max-width: 650px;
+    width: 650px;
+    max-height: 600px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+}
+.modal__title {
+  color: var(--white);
+}
+.modal__text {
+  color: var(--white);
+  text-align: center;
 }
 
-@media (max-width: 768px) {
-  // .login__wrapper {
-  //   .login__card {
-  //     padding: 20px;
-  //     .login__title {
-  //       p {
-  //         font-size: 14px;
-  //       }
-  //     }
-  //     form {
-  //       gap: 20px;
-  //       .form__control {
-  //         .form__label {
-  //           left: 10px;
-  //         }
-  //         .form__input {
-  //           height: 40px;
-  //           border-radius: 6px;
-  //           padding: 20px 10px;
-  //           font-size: 18px;
-  //           &:valid ~ .form__label,
-  //           &:focus ~ .form__label {
-  //             font-size: 12px;
-  //             padding: 0 3px;
-  //           }
-  //         }
-  //       }
-  //       .loginBtn {
-  //         padding: 5px;
-  //         border-radius: 6px;
-  //         &:hover {
-  //           box-shadow: -1px 3px 5px 2px rgba(102, 96, 195, 0.75);
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
+.err__input {
+  .form__label {
+    color: var(--red) !important;
+  }
+  .form__input {
+    border: 1px solid var(--red) !important;
+  }
+}
+.err__msg {
+  color: red;
 }
 </style>

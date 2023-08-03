@@ -1,14 +1,5 @@
 <template>
-  <div
-    class="login__wrapper d-flex align-items-center justify-content-center min-vh-100 p-3"
-  >
-    <StatusModal v-if="showStatus">
-      <h5 class="modal__title">Successfull register</h5>
-      <p class="modal__text">
-        We have sent an activation link to your account to countinue with the
-        registration process.
-      </p>
-    </StatusModal>
+  <div class="login__wrapper">
     <div class="login__card">
       <div class="login__logo d-flex align-items-center justify-content-center">
         <div class="d-flex me-2">
@@ -19,24 +10,22 @@
         <h2 class="m-0">kanban</h2>
       </div>
       <div class="login__title">
-        <h5>Adventure starts here</h5>
-        <p>Make your app management easy and fun!</p>
+        <h5>Welcome to Kanban !</h5>
+        <p>Please sign-in to your account and start the adventure</p>
       </div>
       <div class="form__wrapper">
-        <div class="form__control">
-          <input class="form__input" type="text" v-model="userName" />
-          <label class="form__label">Username</label>
-        </div>
-        <div class="form__control">
-          <input class="form__input" type="mail" v-model="email" />
+        <div class="form__control" :class="{ err__input: activeErr }">
+          <input class="form__input" type="mail" v-model="email" required />
           <label class="form__label">Email</label>
         </div>
-        <div class="form__control">
+        <div class="form__control" :class="{ err__input: activeErr }">
           <input
             class="form__input"
             type="password"
             v-model="password"
             ref="inputRef"
+            required
+            @keypress.enter="login"
           />
           <label class="form__label">Password</label>
           <i
@@ -45,14 +34,14 @@
             @click="togglePassword"
           ></i>
         </div>
-        <div class="form__agreement">
-          <input class="form-check-input" type="checkbox" />
-          <span>I agree to <a href="#">privacy policy & terms</a></span>
+        <div class="forgot__pass">
+          <RouterLink to="/forgot-password">Forgot Password?</RouterLink>
+          <p v-if="errMsg" class="err__msg">{{ errMsg }}</p>
         </div>
-        <button class="loginBtn" @click="registerBtn">Sign Up</button>
+        <PrimaryBtn buttonWidth="100%" :onClick='login'>LOGIN</PrimaryBtn>
         <div class="register d-flex align-items-center justify-content-center">
-          <span>Already have an account?</span>
-          <RouterLink to="/login">Sign in instead</RouterLink>
+          <span>New on our platform?</span>
+          <RouterLink to="/register">Create an account</RouterLink>
         </div>
         <div class="hr">
           <hr />
@@ -72,39 +61,69 @@
         </div>
       </div>
     </div>
+    <div class="page__img d-none d-lg-block">
+      <img src="../../assets/img/login.svg" alt="login" />
+    </div>
   </div>
 </template>
 
 <script setup>
-import StatusModal from "@/components/StatusModal.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router"; //import router
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useCounterStore } from "@/stores/counter";
+import PrimaryBtn from "@/components/Buttons/PrimaryBtn.vue";
+const router = useRouter(); // get reference to our vue router
+const storeCount = useCounterStore(); // get reference to our store
 
-const showStatus = ref(false);
-
-const inputRef = ref(null);
-let showPassword = ref(false);
-const router = useRouter();  // get reference to our vue router
-
-const userName = ref("");
 const email = ref("");
 const password = ref("");
+const inputRef = ref(null);
+let showPassword = ref(false);
 
-//Register button
-const registerBtn = () => {
-  createUserWithEmailAndPassword(getAuth(), email.value, password.value)
+let activeErr = ref(false); //Activate error input class
+const errMsg = ref(""); //Error message
+
+//Login button
+const login = () => {
+  signInWithEmailAndPassword(getAuth(), email.value, password.value)
     .then((data) => {
-      console.log(data);
-      showStatus.value = true;
-      setTimeout(() => {
-        showStatus.value = false;
-      }, 1500);
+      if (data.user.emailVerified == false) {
+        errMsg.value = "Your email is not verified!";
+      } else {
+        router.push("/home");
+      }
     })
-    .catch(() => {
-      console.log("error");
+    .catch((err) => {
+      switch (err.code) {
+        case "auth/invalid-email":
+          errMsg.value = "Invalid email";
+          activeErr.value = true;
+          break;
+        case "auth/user-not-found":
+          errMsg.value = "No account with that email was found";
+          activeErr.value = true;
+          break;
+        case "auth/user-disabled":
+          errMsg.value = "Your account has been disabled";
+          activeErr.value = true;
+          break;
+        case "auth/wrong-password":
+          errMsg.value = "Invalid password";
+          activeErr.value = true;
+          break;
+        case "auth/missing-password":
+          errMsg.value = "The password field is empty";
+          activeErr.value = true;
+          break;
+        default:
+          errMsg.value = "Email or password was incorrect";
+          activeErr.value = true;
+          break;
+      }
     });
 };
+
 //Show Password
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
@@ -119,6 +138,12 @@ const togglePassword = () => {
 <style lang="scss" scoped>
 .login__wrapper {
   background: var(--bg);
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
   .login__card {
     max-width: 448px;
     width: 100%;
@@ -148,7 +173,7 @@ const togglePassword = () => {
     }
     .login__title {
       color: var(--white);
-      margin-block: 30px;
+      margin: 30px 0;
       p {
         margin: 0;
         color: var(--primary);
@@ -205,28 +230,11 @@ const togglePassword = () => {
         }
       }
       .forgot__pass {
-        text-align: end;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         a {
           color: var(--primary);
-        }
-      }
-      .form__agreement {
-        input {
-          width: 18px;
-          height: 18px;
-          margin-right: 20px;
-          outline: none;
-          &:checked {
-            background-color: var(--primary);
-            border-color: var(--primary);
-          }
-        }
-        span {
-          color: var(--white);
-          a {
-            color: var(--primary);
-            text-decoration: none;
-          }
         }
       }
       .loginBtn {
@@ -289,12 +297,28 @@ const togglePassword = () => {
       }
     }
   }
+  .page__img {
+    max-width: 450px;
+    width: 450px;
+    max-height: 500px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
 }
-.modal__title {
-  color: var(--white);
+.err__input {
+  .form__label {
+    color: var(--red) !important;
+  }
+  .form__input {
+    border: 1px solid var(--red) !important;
+  }
 }
-.modal__text {
-  color: var(--white);
-  text-align: center;
+.err__msg {
+  color: var(--red);
+  font-size: 14px;
+  margin: 0;
 }
 </style>

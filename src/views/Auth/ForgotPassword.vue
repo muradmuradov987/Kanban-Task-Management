@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="forgot__password d-flex align-items-center justify-content-center min-vh-100 p-3"
-  >
+  <div class="forgot__password">
     <StatusModal v-if="showStatus">
       <h5 class="modal__title">We have e-mailed you password reset link</h5>
     </StatusModal>
@@ -24,38 +22,63 @@
           password
         </p>
       </div>
-      <div class="form__control">
+      <div class="form__control" :class="{ err__input: activeErr }">
         <input class="form__input" v-model="resetMail" type="mail" required />
         <label class="form__label">Email</label>
       </div>
-      <button class="sendResetLinkBtn" @click="sendLink">
-        Send Reset Link
-      </button>
+      <p v-if="activeErr" class="err__msg">{{ errMsg }}</p>
+      <PrimaryBtn buttonWidth="100%" :onClick="sendLink">
+        Send Reset Link</PrimaryBtn
+      >
       <div class="back">
         <RouterLink to="/login">
           <i class="fa-solid fa-chevron-left"></i>Back to login</RouterLink
         >
       </div>
     </div>
+    <div class="page__img d-none d-lg-block">
+      <img src="../../assets/img/forgot-password.svg" alt="login" />
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import StatusModal from "@/components/StatusModal.vue";
-
+import StatusModal from "@/components/Modals/StatusModal.vue";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import PrimaryBtn from "@/components/Buttons/PrimaryBtn.vue";
 let resetMail = ref("");
 const showStatus = ref(false);
+let activeErr = ref(false); //Activate error input class
+const errMsg = ref(""); //Error message
 
 const sendLink = () => {
   if (resetMail.value == "") {
-    return;
+    activeErr.value = true;
+    errMsg.value = "The email field is empty";
   } else {
-    resetMail.value = "";
-    showStatus.value = true;
-    setTimeout(() => {
-      showStatus.value = false;
-    }, 1500);
+    sendPasswordResetEmail(getAuth(), resetMail.value)
+      .then(() => {
+        resetMail.value = "";
+        activeErr.value = false;
+        errMsg.value = "";
+        showStatus.value = true;
+        setTimeout(() => {
+          showStatus.value = false;
+        }, 2500);
+      })
+      .catch((err) => {
+        switch (err.code) {
+          case "auth/invalid-email":
+            errMsg.value = "Invalid email";
+            activeErr.value = true;
+            break;
+          default:
+            errMsg.value = "Try again";
+            activeErr.value = true;
+            break;
+        }
+      });
   }
 };
 </script>
@@ -67,6 +90,12 @@ h1 {
 .forgot__password {
   background: var(--bg);
   position: relative;
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
   .forgot__password-container {
     max-width: 448px;
     width: 100%;
@@ -180,8 +209,32 @@ h1 {
       }
     }
   }
+  .page__img {
+    max-width: 650px;
+    width: 650px;
+    max-height: 600px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
 }
 .modal__title {
   color: var(--white);
+}
+
+.err__input {
+  .form__label {
+    color: var(--red) !important;
+  }
+  .form__input {
+    border: 1px solid var(--red) !important;
+  }
+}
+.err__msg {
+  color: var(--red) !important;
+  font-size: 14px;
+  margin: 20px 0;
 }
 </style>
