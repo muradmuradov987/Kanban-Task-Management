@@ -8,28 +8,21 @@
       </p>
     </StatusModal>
     <div class="login__card">
-      <div class="login__logo d-flex align-items-center justify-content-center">
-        <div class="d-flex me-2">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <h2 class="m-0">kanban</h2>
-      </div>
+      <Logo />
       <div class="login__title">
         <h5>Adventure starts here</h5>
         <p>Make your app management easy and fun!</p>
       </div>
       <div class="form__wrapper">
-        <div class="form__control" :class="{ err__input: activeErr }">
+        <div class="form__control" :class="{ err__input: validation.fullName }">
           <input class="form__input" type="text" v-model="fullName" required />
           <label class="form__label">Fullname</label>
         </div>
-        <div class="form__control" :class="{ err__input: activeErr }">
+        <div class="form__control" :class="{ err__input: validation.email }">
           <input class="form__input" type="mail" v-model="email" required />
           <label class="form__label">Email</label>
         </div>
-        <div class="form__control" :class="{ err__input: activeErr }">
+        <div class="form__control" :class="{ err__input: validation.password }">
           <input
             class="form__input"
             type="password"
@@ -45,7 +38,9 @@
           ></i>
         </div>
         <p v-if="errMsg" class="err__msg">{{ errMsg }}</p>
-        <PrimaryBtn buttonWidth="100%" :onClick='registerBtn'>Sign Up</PrimaryBtn>
+        <PrimaryBtn buttonWidth="100%" :onClick="registerBtn"
+          >Sign Up</PrimaryBtn
+        >
         <div class="register d-flex align-items-center justify-content-center">
           <span>Already have an account?</span>
           <RouterLink to="/login">Sign in instead</RouterLink>
@@ -79,6 +74,7 @@ import StatusModal from "@/components/Modals/StatusModal.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router"; //import router
 import PrimaryBtn from "@/components/Buttons/PrimaryBtn.vue";
+import Logo from "@/components/Logo.vue";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -87,7 +83,17 @@ import {
 
 const showStatus = ref(false);
 
-let activeErr = ref(false); //Activate error input class
+let validation = ref({
+  fullName: false,
+  email: false,
+  password: false,
+});
+
+const resetValidation = () => {
+  validation.value.fullName = false;
+  validation.value.email = false;
+  validation.value.password = false;
+};
 const errMsg = ref(""); //Error message
 
 const inputRef = ref(null);
@@ -100,45 +106,52 @@ const password = ref("");
 
 //Register button
 const registerBtn = () => {
-  if (fullName.value == "" || email.value == "" || password.value == "") {
-    activeErr.value = true;
-    errMsg.value = "Email or password was incorrect";
-  } else {
-    createUserWithEmailAndPassword(getAuth(), email.value, password.value)
-      .then((data) => {
-        sendEmailVerification(getAuth().currentUser).then(() => {});
-        fullName.value = "";
-        email.value = "";
-        password.value = "";
-        activeErr.value = false;
-        errMsg.value = "";
-        showStatus.value = true;
+  resetValidation();
 
-        setTimeout(() => {
-          showStatus.value = false;
-        }, 2500);
-      })
-      .catch((err) => {
-        switch (err.code) {
-          case "auth/invalid-email":
-            errMsg.value = "Invalid email";
-            activeErr.value = true;
-            break;
-          case "auth/wrong-password":
-            errMsg.value = "Invalid password";
-            activeErr.value = true;
-            break;
-          case "auth/weak-password":
-            errMsg.value = "Password should be at least 6 characters";
-            activeErr.value = true;
-            break;
-          default:
-            errMsg.value = "Email or password was incorrect";
-            activeErr.value = true;
-            break;
-        }
-      });
+  if (fullName.value == "") {
+    validation.value.fullName = true;
   }
+  if (email.value == "") {
+    validation.value.email = true;
+  }
+  if (password.value == "") {
+    validation.value.password = true;
+  }
+
+  createUserWithEmailAndPassword(getAuth(), email.value, password.value)
+    .then((data) => {
+      sendEmailVerification(getAuth().currentUser).then(() => {});
+      fullName.value = "";
+      email.value = "";
+      password.value = "";
+      resetValidation();
+      errMsg.value = "";
+      showStatus.value = true;
+      setTimeout(() => {
+        showStatus.value = false;
+      }, 5000);
+    })
+    .catch((err) => {
+      switch (err.code) {
+        case "auth/invalid-email":
+          errMsg.value = "Invalid email";
+          validation.value.email = true;
+          break;
+        case "auth/wrong-password":
+          errMsg.value = "Invalid password";
+          validation.value.password = true;
+          break;
+        case "auth/weak-password":
+          errMsg.value = "Password should be at least 6 characters";
+          validation.value.password = true;
+          break;
+        default:
+          errMsg.value = "Email or password was incorrect";
+          validation.value.email = true;
+          validation.value.password = true;
+          break;
+      }
+    });
 };
 
 //Show Password
@@ -167,30 +180,9 @@ const togglePassword = () => {
     border-radius: 6px;
     background: var(--bg2);
     padding: 40px 20px;
-    .login__logo {
-      div {
-        span {
-          width: 3px;
-          height: 25px;
-          margin-right: 3px;
-          &:nth-child(1) {
-            background: #6561c8;
-          }
-          &:nth-child(2) {
-            background: #555597;
-          }
-          &:nth-child(3) {
-            background: #4a467d;
-          }
-        }
-      }
-      h2 {
-        color: var(--white);
-      }
-    }
     .login__title {
       color: var(--white);
-      margin-block: 30px;
+      margin: 30px 0;
       p {
         margin: 0;
         color: var(--primary);
@@ -271,6 +263,7 @@ const togglePassword = () => {
         }
         a {
           color: var(--primary);
+          text-decoration: none;
         }
       }
       .hr {
@@ -342,5 +335,50 @@ const togglePassword = () => {
 }
 .err__msg {
   color: red;
+}
+
+@media (max-width: 767px) {
+  .login__wrapper {
+    gap: unset;
+    .login__card {
+      padding: 20px;
+      .login__title {
+        margin: 20px 0;
+        p {
+          font-size: 14px;
+        }
+      }
+      .form__wrapper {
+        gap: 20px;
+        .form__control {
+          .form__label {
+            font-size: 14px;
+          }
+          .form__input {
+            height: 50px;
+            border-radius: 6px;
+            font-size: 14px;
+          }
+        }
+        .hr {
+          span {
+            padding: 0 10px;
+          }
+        }
+        .sosial__network {
+          gap: 10px;
+        }
+      }
+    }
+  }
+  .modal__title {
+    font-size: 12px;
+    margin: 0;
+  }
+  .modal__text{
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 12px;
+  }
 }
 </style>

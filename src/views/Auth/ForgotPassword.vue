@@ -4,14 +4,7 @@
       <h5 class="modal__title">We have e-mailed you password reset link</h5>
     </StatusModal>
     <div class="forgot__password-container">
-      <div class="login__logo d-flex align-items-center justify-content-center">
-        <div class="d-flex me-2">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <h2 class="m-0">kanban</h2>
-      </div>
+      <Logo />
       <div class="forgot__password-title">
         <div>
           <h5>Forgot Password?</h5>
@@ -47,6 +40,7 @@ import { ref } from "vue";
 import StatusModal from "@/components/Modals/StatusModal.vue";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import PrimaryBtn from "@/components/Buttons/PrimaryBtn.vue";
+import Logo from "@/components/Logo.vue";
 let resetMail = ref("");
 const showStatus = ref(false);
 let activeErr = ref(false); //Activate error input class
@@ -74,7 +68,7 @@ const sendLink = () => {
             activeErr.value = true;
             break;
           default:
-            errMsg.value = "Try again";
+            errMsg.value = "No account with that email was found";
             activeErr.value = true;
             break;
         }
@@ -84,9 +78,6 @@ const sendLink = () => {
 </script>
 
 <style lang="scss" scoped>
-h1 {
-  color: white;
-}
 .forgot__password {
   background: var(--bg);
   position: relative;
@@ -102,27 +93,7 @@ h1 {
     border-radius: 6px;
     background: var(--bg2);
     padding: 40px 20px;
-    .login__logo {
-      div {
-        span {
-          width: 3px;
-          height: 25px;
-          margin-right: 3px;
-          &:nth-child(1) {
-            background: #6561c8;
-          }
-          &:nth-child(2) {
-            background: #555597;
-          }
-          &:nth-child(3) {
-            background: #4a467d;
-          }
-        }
-      }
-      h2 {
-        color: var(--white);
-      }
-    }
+
     .forgot__password-title {
       margin: 30px 0;
       div {
@@ -236,5 +207,32 @@ h1 {
   color: var(--red) !important;
   font-size: 14px;
   margin: 20px 0;
+}
+
+@media (max-width: 767px) {
+  .forgot__password {
+    gap: unset;
+    .forgot__password-container {
+      padding: 20px;
+
+      .forgot__password-title {
+        margin: 20px 0;
+      }
+      .form__control {
+        .form__label {
+          font-size: 14px;
+        }
+        .form__input {
+          height: 50px;
+          border-radius: 6px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+  .modal__title {
+    font-size: 12px;
+    margin: 0;
+  }
 }
 </style>

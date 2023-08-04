@@ -1,24 +1,17 @@
 <template>
   <div class="login__wrapper">
     <div class="login__card">
-      <div class="login__logo d-flex align-items-center justify-content-center">
-        <div class="d-flex me-2">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <h2 class="m-0">kanban</h2>
-      </div>
+      <Logo />
       <div class="login__title">
         <h5>Welcome to Kanban !</h5>
         <p>Please sign-in to your account and start the adventure</p>
       </div>
       <div class="form__wrapper">
-        <div class="form__control" :class="{ err__input: activeErr }">
+        <div class="form__control" :class="{ err__input: validation.email }">
           <input class="form__input" type="mail" v-model="email" required />
           <label class="form__label">Email</label>
         </div>
-        <div class="form__control" :class="{ err__input: activeErr }">
+        <div class="form__control" :class="{ err__input: validation.password }">
           <input
             class="form__input"
             type="password"
@@ -38,7 +31,7 @@
           <RouterLink to="/forgot-password">Forgot Password?</RouterLink>
           <p v-if="errMsg" class="err__msg">{{ errMsg }}</p>
         </div>
-        <PrimaryBtn buttonWidth="100%" :onClick='login'>LOGIN</PrimaryBtn>
+        <PrimaryBtn buttonWidth="100%" :onClick="login">LOGIN</PrimaryBtn>
         <div class="register d-flex align-items-center justify-content-center">
           <span>New on our platform?</span>
           <RouterLink to="/register">Create an account</RouterLink>
@@ -73,19 +66,36 @@ import { useRouter } from "vue-router"; //import router
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useCounterStore } from "@/stores/counter";
 import PrimaryBtn from "@/components/Buttons/PrimaryBtn.vue";
+import Logo from "@/components/Logo.vue";
 const router = useRouter(); // get reference to our vue router
 const storeCount = useCounterStore(); // get reference to our store
+
+let validation = ref({
+  email: false,
+  password: false,
+});
+
+const resetValidation = () => {
+  validation.value.email = false;
+  validation.value.password = false;
+};
 
 const email = ref("");
 const password = ref("");
 const inputRef = ref(null);
 let showPassword = ref(false);
 
-let activeErr = ref(false); //Activate error input class
 const errMsg = ref(""); //Error message
 
 //Login button
 const login = () => {
+  resetValidation();
+  if (email.value == "") {
+    validation.value.email = true;
+  }
+  if (password.value == "") {
+    validation.value.password = true;
+  }
   signInWithEmailAndPassword(getAuth(), email.value, password.value)
     .then((data) => {
       if (data.user.emailVerified == false) {
@@ -98,27 +108,28 @@ const login = () => {
       switch (err.code) {
         case "auth/invalid-email":
           errMsg.value = "Invalid email";
-          activeErr.value = true;
+          validation.value.email = true;
           break;
         case "auth/user-not-found":
           errMsg.value = "No account with that email was found";
-          activeErr.value = true;
+          validation.value.email = true;
           break;
         case "auth/user-disabled":
           errMsg.value = "Your account has been disabled";
-          activeErr.value = true;
+          validation.value.email = true;
           break;
         case "auth/wrong-password":
           errMsg.value = "Invalid password";
-          activeErr.value = true;
+          validation.value.password = true;
           break;
         case "auth/missing-password":
           errMsg.value = "The password field is empty";
-          activeErr.value = true;
+          validation.value.password = true;
           break;
         default:
           errMsg.value = "Email or password was incorrect";
-          activeErr.value = true;
+          validation.value.email = true;
+          validation.value.password = true;
           break;
       }
     });
@@ -150,27 +161,7 @@ const togglePassword = () => {
     border-radius: 6px;
     background: var(--bg2);
     padding: 40px 20px;
-    .login__logo {
-      div {
-        span {
-          width: 3px;
-          height: 25px;
-          margin-right: 3px;
-          &:nth-child(1) {
-            background: #6561c8;
-          }
-          &:nth-child(2) {
-            background: #555597;
-          }
-          &:nth-child(3) {
-            background: #4a467d;
-          }
-        }
-      }
-      h2 {
-        color: var(--white);
-      }
-    }
+
     .login__title {
       color: var(--white);
       margin: 30px 0;
@@ -235,6 +226,7 @@ const togglePassword = () => {
         align-items: center;
         a {
           color: var(--primary);
+          text-decoration: none;
         }
       }
       .loginBtn {
@@ -255,6 +247,7 @@ const togglePassword = () => {
         }
         a {
           color: var(--primary);
+          text-decoration: none;
         }
       }
       .hr {
@@ -320,5 +313,49 @@ const togglePassword = () => {
   color: var(--red);
   font-size: 14px;
   margin: 0;
+}
+
+@media (max-width: 767px) {
+  .login__wrapper {
+    gap: unset;
+    .login__card {
+      padding: 20px;
+      .login__title {
+        margin: 20px 0;
+        p {
+          font-size: 14px;
+        }
+      }
+      .form__wrapper {
+        gap: 20px;
+        .form__control {
+          .form__label {
+            font-size: 14px;
+          }
+          .form__input {
+            height: 50px;
+            border-radius: 6px;
+            font-size: 14px;
+          }
+        }
+        .register {
+          span {
+            font-size: 14px;
+          }
+          a {
+            font-size: 14px;
+          }
+        }
+        .hr {
+          span {
+            padding: 0 10px;
+          }
+        }
+        .sosial__network {
+          gap: 10px;
+        }
+      }
+    }
+  }
 }
 </style>

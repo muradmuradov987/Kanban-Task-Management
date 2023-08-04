@@ -1,12 +1,22 @@
 <template>
   <div class="statusModal__container">
-    <div class="check-icon">
-      <span class="icon-line line-tip"></span>
-      <span class="icon-line line-long"></span>
-      <div class="icon-circle"></div>
-      <div class="icon-fix"></div>
-    </div>
-    <slot> </slot>
+    <svg viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">
+      <g
+        stroke="currentColor"
+        stroke-width="1"
+        fill="none"
+        fill-rule="evenodd"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          class="circle"
+          d="M13 1C6.372583 1 1 6.372583 1 13s5.372583 12 12 12 12-5.372583 12-12S19.627417 1 13 1z"
+        />
+        <path class="tick" d="M6.5 13.5L10 17 l8.808621-8.308621" />
+      </g>
+    </svg>
+    <slot></slot>
   </div>
 </template>
 
@@ -18,147 +28,42 @@
   top: 30px;
   right: 20px;
   max-width: 450px;
-  width: 100%;
-  padding: 10px;
+  width: 450px;
+  padding: 20px;
+  border: 2px solid var(--bg);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   flex-direction: column;
   background: var(--bg2);
-  animation: scale-up-ver-top 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+  animation: scale-up-ver-top 0.5s cubic-bezier(0.39, 0.575, 0.565, 1) both;
   z-index: 100;
-  .check-icon {
-    width: 80px;
+  svg {
+    display: block;
     height: 80px;
-    position: relative;
-    border-radius: 50%;
-    box-sizing: content-box;
-    border: 4px solid #4caf50;
+    width: 80px;
     margin-bottom: 20px;
-    .icon-line {
-      height: 5px;
-      background-color: #4caf50;
-      display: block;
-      border-radius: 2px;
-      position: absolute;
-      z-index: 10;
-      &.line-tip {
-        top: 46px;
-        left: 14px;
-        width: 25px;
-        transform: rotate(45deg);
-        animation: icon-line-tip 0.75s;
-      }
+    color: rgb(20, 212, 20); /* SVG path use currentColor to inherit this */
+  }
 
-      &.line-long {
-        top: 38px;
-        right: 8px;
-        width: 47px;
-        transform: rotate(-45deg);
-        animation: icon-line-long 0.75s;
-      }
-    }
-    .icon-circle {
-      top: -4px;
-      left: -4px;
-      z-index: 10;
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      position: absolute;
-      box-sizing: content-box;
-      border: 4px solid rgba(76, 175, 80, 0.5);
-    }
-    .icon-fix {
-      top: 8px;
-      width: 5px;
-      left: 26px;
-      z-index: 1;
-      height: 85px;
-      position: absolute;
-      transform: rotate(-45deg);
-      background: transparent;
+  .circle {
+    stroke-dasharray: 76;
+    stroke-dashoffset: 76;
+    animation: draw 0.7s forwards;
+  }
+
+  .tick {
+    stroke-dasharray: 18;
+    stroke-dashoffset: 18;
+    animation: draw 0.7s forwards 0.7s;
+  }
+
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
     }
   }
 
-  @keyframes rotate-circle {
-    0% {
-      transform: rotate(-45deg);
-    }
-    5% {
-      transform: rotate(-45deg);
-    }
-    12% {
-      transform: rotate(-405deg);
-    }
-    100% {
-      transform: rotate(-405deg);
-    }
-  }
-
-  @keyframes icon-line-tip {
-    0% {
-      width: 0;
-      left: 1px;
-      top: 19px;
-    }
-    54% {
-      width: 0;
-      left: 1px;
-      top: 19px;
-    }
-    70% {
-      width: 50px;
-      left: -8px;
-      top: 37px;
-    }
-    84% {
-      width: 17px;
-      left: 21px;
-      top: 48px;
-    }
-    100% {
-      width: 25px;
-      left: 14px;
-      top: 45px;
-    }
-  }
-
-  @keyframes icon-line-long {
-    0% {
-      width: 0;
-      right: 46px;
-      top: 54px;
-    }
-    65% {
-      width: 0;
-      right: 46px;
-      top: 54px;
-    }
-    84% {
-      width: 55px;
-      right: 0px;
-      top: 35px;
-    }
-    100% {
-      width: 47px;
-      right: 8px;
-      top: 38px;
-    }
-  }
-  @-webkit-keyframes scale-up-ver-top {
-    0% {
-      -webkit-transform: scaleY(0.2);
-      transform: scaleY(0.4);
-      -webkit-transform-origin: 100% 0%;
-      transform-origin: 100% 0%;
-    }
-    100% {
-      -webkit-transform: scaleY(1);
-      transform: scaleY(1);
-      -webkit-transform-origin: 100% 0%;
-      transform-origin: 100% 0%;
-    }
-  }
   @keyframes scale-up-ver-top {
     0% {
       -webkit-transform: scaleY(0.2);
@@ -175,14 +80,20 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .statusModal__container {
-    top: 0px;
-    right: 0px;
-    left: 0;
+    position: absolute;
+    top: 20px;
+    right: unset;
+    transform: translate(-50%,-50%);
+    max-width: 250px;
+    width: 250px;
     padding: 10px;
-    border: 2px solid var(--primary);
-    z-index: 100;
+    svg {
+      height: 40px;
+      width: 40px;
+      margin-bottom: 10px;
+    }
   }
 }
 </style>
