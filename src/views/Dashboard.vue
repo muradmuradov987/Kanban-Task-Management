@@ -1,21 +1,22 @@
 <template>
-  <h1>Home</h1>
-  <h1>{{ storeCount.token }}</h1>
-  <button @click="logOut">LogOut</button>
+  <div class="dasboard__container">
+    <Navbar />
+    <h1>Home</h1>
+  </div>
 </template>
 
 <script setup>
-
 import { useCounterStore } from "@/stores/counter";
 import { useRouter } from "vue-router"; //import router
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-
+import Navbar from "@/components/Navbar.vue";
 
 const storeCount = useCounterStore(); // get reference to our store
 const router = useRouter(); // get reference to our vue router
-const logOut = () => {
-  signOut(getAuth()).then(() => {
-    router.push("/login");
-  });
-};
 </script>
+
+<style lang="scss" scoped>
+.dasboard__container {
+  min-height: 100vh;
+  background: var(--bg);
+}
+</style>

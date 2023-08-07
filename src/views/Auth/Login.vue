@@ -101,7 +101,7 @@ const login = () => {
       if (data.user.emailVerified == false) {
         errMsg.value = "Your email is not verified!";
       } else {
-        router.push("/home");
+        router.push("/dashboard");
       }
     })
     .catch((err) => {

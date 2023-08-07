@@ -14,11 +14,6 @@ const router = createRouter({
       component: () => import("../views/Auth/Login.vue"),
     },
     {
-      path: "/signUp",
-      name: "signUp",
-      component: () => import("../views/Auth/SignUp.vue"),
-    },
-    {
       path: "/forgot-password",
       name: "forgotPassword",
       component: () => import("../views/Auth/ForgotPassword.vue"),
@@ -30,9 +25,9 @@ const router = createRouter({
     },
 
     {
-      path: "/home",
-      name: "home",
-      component: () => import("../views/Home.vue"),
+      path: "/dashboard",
+      name: "dashboard",
+      component: () => import("../views/Dashboard.vue"),
       meta: { requiresAuth: true },
     },
   ],
