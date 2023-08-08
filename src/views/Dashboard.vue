@@ -1,7 +1,7 @@
 <template>
   <div class="dasboard__container">
     <Navbar />
-    <h1>Home</h1>
+    <h1>{{storeCount.modal.showModal}}</h1>
   </div>
 </template>
 
@@ -18,5 +18,8 @@ const router = useRouter(); // get reference to our vue router
 .dasboard__container {
   min-height: 100vh;
   background: var(--bg);
+}
+h1{
+  color: red;
 }
 </style>

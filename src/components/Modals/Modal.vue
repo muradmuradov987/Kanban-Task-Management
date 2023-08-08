@@ -1,17 +1,15 @@
 <template>
-  <div class="modal__backdrop" >
-    <div class="modal__container" >
+  <div class="modal__backdrop"  @click="handleBackdropClick">
+    <div class="modal__container">
       <div class="modal__header">
-        <h5 class="modal__title">
-          <slot name="modalTitle"></slot>
-        </h5>
+        <h5 class="modal__title">{{ storeCount.modal.title }}</h5>
         <div class="modal__edit">
           <!-- <i class="fa-solid fa-pen-to-square"></i> -->
           <i class="fa-solid fa-xmark" @click="handleClick"></i>
         </div>
       </div>
       <div class="modal__body">
-        <slot name="modalBody"></slot>
+        <slot></slot>
       </div>
     </div>
   </div>
@@ -19,17 +17,31 @@
 
 
 <script setup>
-import {ref} from 'vue';
-import { defineProps } from "vue";
+import { ref } from "vue";
+import { useCounterStore } from "@/stores/counter";
+const storeCount = useCounterStore(); // get reference to our store
 
-const {  onClick } = defineProps(["onclick"]);
+// import { defineProps } from "vue";
+
+// const { onClick } = defineProps(["onclick"]);
+
+// const handleClick = () => {
+//   if (typeof onClick === "function") {
+//     onClick();
+//   }
+// };
 
 
 const handleClick = () => {
-  if (typeof onClick === "function") {
-    onClick();
+  showModal.value = false;
+};
+
+const handleBackdropClick = (event) => {
+  if (event.target === event.currentTarget) {
+    showModal.value = false;
   }
 };
+
 </script>
 
 

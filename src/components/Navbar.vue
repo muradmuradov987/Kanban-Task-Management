@@ -1,18 +1,15 @@
 <template>
   <!--MODALS-->
-  <Modal v-if="showModal" :onClick="closeModal">
-    <template #modalTitle>
-      <div>Title</div>
-    </template>
-    <template #modalBody> Body </template>
+  <Modal >
+    <template> My Modal </template>
+    <template> My Modals </template>
   </Modal>
-  
   <!--NAVBAR-->
   <div class="nav">
     <Logo />
     <h3 class="nav__title">Platform Launch</h3>
     <div class="nav__right">
-      <button class="addTaskBtn" @click="openNewTask">
+      <button class="addTaskBtn" @click="openNewTask()">
         <i class="fa-solid fa-plus"></i> Add New Task
       </button>
       <div class="profile" @click="toggleProfile">
@@ -45,15 +42,17 @@ const toggleProfile = () => {
   showProfileMenu.value = !showProfileMenu.value;
 };
 
-const showModal = ref(false);
 //Open modal
-const openNewTask = () => {
-  showModal.value = true;
+const openNewTask = (name, title) => {
+  modal.value.showModal = true;
+  // modal.value.name = name;
+  // modal.value.title = title;
 };
 //Close modal
-const closeModal = (e) => {
-  e.preventDefault();
-  showModal.value = false;
+const closeModal = () => {
+  modal.value.showModal = false;
+  // modal.value.name = "";
+  // modal.value.title = "";
 };
 
 //Log out profile

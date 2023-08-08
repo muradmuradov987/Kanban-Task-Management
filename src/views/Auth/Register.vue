@@ -38,9 +38,7 @@
           ></i>
         </div>
         <p v-if="errMsg" class="err__msg">{{ errMsg }}</p>
-        <PrimaryBtn buttonWidth="100%" :onClick="registerBtn"
-          >Sign Up</PrimaryBtn
-        >
+        <PrimaryBtn buttonWidth="100%" :onClick="registerBtn" >Sign Up</PrimaryBtn>
         <div class="register d-flex align-items-center justify-content-center">
           <span>Already have an account?</span>
           <RouterLink to="/login">Sign in instead</RouterLink>
@@ -94,6 +92,7 @@ const resetValidation = () => {
   validation.value.email = false;
   validation.value.password = false;
 };
+
 const errMsg = ref(""); //Error message
 
 const inputRef = ref(null);

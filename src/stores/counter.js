@@ -4,7 +4,11 @@ import { defineStore } from "pinia";
 export const useCounterStore = defineStore({
   id: "counter",
   state: () => ({
-    token: "",
-    isLoggedIn: false
+    modal: {
+      showModal: false,
+      name: "",
+      title: "sssss",
+    },
+    isLoggedIn: false,
   }),
 });
