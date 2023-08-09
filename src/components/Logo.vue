@@ -1,16 +1,19 @@
 <template>
-  <div class="login__logo d-flex align-items-center justify-content-center">
+  <div class="login__logo">
     <div class="d-flex me-2">
       <span></span>
       <span></span>
       <span></span>
     </div>
     <h2 class="m-0">kanban</h2>
+    <i class="fa-solid fa-angle-down d-block d-md-none"></i>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .login__logo {
+  display: flex;
+  align-items: center;
   div {
     span {
       width: 3px;
@@ -30,5 +33,13 @@
   h2 {
     color: var(--white);
   }
+  i {
+    color: var(--primary);
+    margin-left: 10px;
+  }
+}
+
+@media(max-width:767px){
+
 }
 </style>

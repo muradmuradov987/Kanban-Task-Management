@@ -5,10 +5,22 @@ export const useCounterStore = defineStore({
   id: "counter",
   state: () => ({
     modal: {
-      showModal: false,
+      show: false,
+      title: "",
+      editBtn: false,
       name: "",
-      title: "sssss",
     },
     isLoggedIn: false,
   }),
+  actions: {
+    openModal(title, name ) {
+      this.modal.show = true;
+      this.modal.title = title;
+      this.modal.name = name;
+      // this.modal.editBtn = edit;
+    },
+    editBtn() {
+      console.log("sdghadsbhsdgb");
+    },
+  },
 });
