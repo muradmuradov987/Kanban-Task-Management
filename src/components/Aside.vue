@@ -1,0 +1,158 @@
+<template>
+  <aside v-if="storeCount.showAside">
+    <div class="board__link-container">
+      <h6 class="board__number">ALL BOARDS (3)</h6>
+      <RouterLink to="/platform-launch" class="board__link">
+        <i class="fa-solid fa-bolt"></i><span>Platform Launch</span>
+      </RouterLink>
+      <RouterLink to="/marketing-plan" class="board__link">
+        <i class="fa-solid fa-bolt"></i>Marketing Plan
+      </RouterLink>
+      <PrimaryBtn
+        class="createNewBoardBtn"
+        background="var(--white)"
+        color="var(--primary)"
+        buttonWidth="70%"
+        @click="storeCount.openModal('Create New Board', 'create-new-board')"
+        ><i class="fa-solid fa-plus me-2"></i>
+        <span>Create New Board</span></PrimaryBtn
+      >
+    </div>
+    <div class="aside__footer">
+      <div class="theme__toggle">
+        <i class="fa-solid fa-sun"></i>
+        <input type="checkbox" checked class="themeBtn" />
+        <i class="fa-solid fa-moon"></i>
+      </div>
+      <div class="hide__sidebar" @click="storeCount.hideSidebar">
+        <i class="fa-regular fa-eye-slash"></i>Hide Sidebar
+      </div>
+    </div>
+  </aside>
+</template>
+
+<script setup>
+import { ref } from "vue";
+import { useCounterStore } from "@/stores/counter";
+import PrimaryBtn from "@/components/Buttons/PrimaryBtn.vue";
+
+const storeCount = useCounterStore(); // get reference to our store
+</script>
+
+
+
+<style lang="scss" scoped>
+aside {
+  width: 18%;
+  height: calc(100vh - 90px);
+  background: var(--bg2);
+  .board__link-container {
+    padding: 20px;
+    padding-left: 0;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--primary);
+    }
+    .board__number {
+      color: var(--grey);
+      margin-left: 20px;
+    }
+    .board__link {
+      padding: 13px 20px;
+      border-radius: 0 100px 100px 0;
+      color: var(--grey);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 18px;
+      transition: 0.3s ease-in-out;
+      i {
+        margin-right: 10px;
+      }
+      &:hover {
+        background: var(--white);
+        color: var(--primary);
+      }
+    }
+    .router-link-active {
+      background: var(--primary);
+      color: var(--white);
+    }
+    .createNewBoardBtn {
+      margin-left: 20px;
+    }
+  }
+  .aside__footer {
+    height: 20%;
+    .theme__toggle {
+      background: var(--bg);
+      border-radius: 10px;
+      margin: 0px 20px;
+      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 25px;
+      i {
+        font-size: 20px;
+        color: var(--grey);
+      }
+      .themeBtn {
+        position: relative;
+        width: 45px;
+        height: 20px;
+        -webkit-appearance: none;
+        appearance: none;
+        background: var(--primary);
+        border-radius: 15px;
+        cursor: pointer;
+        transition: 0.3s ease;
+        &::before {
+          content: "";
+          width: 20px;
+          height: 20px;
+          background: var(--white);
+          border-radius: 50%;
+          transition: 0.3s ease;
+          position: absolute;
+          left: 0;
+        }
+        &:checked {
+          &::before {
+            right: 0;
+            transform: translateX(130%);
+          }
+        }
+        &:hover {
+          background: var(--grey);
+        }
+      }
+    }
+    .hide__sidebar {
+      margin: 20px;
+      text-align: center;
+      padding: 10px 0;
+      border-radius: 10px;
+      color: var(--grey);
+      cursor: pointer;
+      font-weight: 500;
+      background: var(--bg);
+      font-size: 18px;
+      transition: 0.3s ease-in-out;
+      i {
+        margin-right: 10px;
+      }
+      &:hover {
+        background: var(--white);
+        color: var(--primary);
+      }
+    }
+  }
+}
+</style>

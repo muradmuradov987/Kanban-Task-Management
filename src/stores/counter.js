@@ -11,13 +11,20 @@ export const useCounterStore = defineStore({
       name: "",
     },
     isLoggedIn: false,
+    showAside: true,
   }),
   actions: {
-    openModal(title, name ) {
+    openModal(title, name) {
       this.modal.show = true;
       this.modal.title = title;
       this.modal.name = name;
       // this.modal.editBtn = edit;
+    },
+    hideSidebar() {
+      this.showAside = false;
+    },
+    openSidebar() {
+      this.showAside = true;
     },
     editBtn() {
       console.log("sdghadsbhsdgb");

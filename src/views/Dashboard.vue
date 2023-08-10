@@ -1,12 +1,73 @@
 <template>
   <div class="dasboard__container">
+    <!--All MODALS-->
+    <Modal>
+      <template #default>
+        <!--Add New Task-->
+        <div
+          v-if="storeCount.modal.name == 'add-new-task'"
+          class="add-new-task"
+        >
+          <div class="form__control">
+            <label class="form__label">Task Name</label>
+            <input
+              class="form__input"
+              type="text"
+              placeholder="e.g.Take coffe break"
+            />
+          </div>
+          <div class="form__control">
+            <label class="form__label">Description</label>
+            <textarea
+              class="form__textarea"
+              type="text"
+              placeholder="e.g. It's always good to break. This 15 minute break will recharge the batteries a little"
+            ></textarea>
+          </div>
+          <div class="form__control">
+            <label class="form__label">Subtasks</label>
+            <div class="subtask">
+              <input class="form__input" type="text" />
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <div class="form__control">
+            <div class="subtask">
+              <input class="form__input" type="text" />
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+          <PrimaryBtn
+            buttonWidth="100%"
+            background="var(--white)"
+            color="var(--primary)"
+            ><i class="fa-solid fa-plus me-2"></i> Add New Subtask</PrimaryBtn
+          >
+          <div class="form__control">
+            <label class="form__label">Current Status</label>
+            <select class="form__select">
+              <option value="">Todo</option>
+              <option value="">Doing</option>
+              <option value="">Done</option>
+            </select>
+          </div>
+          <PrimaryBtn buttonWidth="100%" class="mb-0"> Create Task</PrimaryBtn>
+        </div>
+        <!--Add New Task end-->
+
+        <!--Create New Board-->
+        <div v-if="storeCount.modal.name == 'create-new-board'">safsafsf</div>
+        <!--Create New Board end-->
+      </template>
+    </Modal>
+
     <Navbar />
     <main>
-      <aside>
-        <h6 class="board__number">ALL BOARDS (3)</h6>
-        <RouterLink to="/test">Create an account</RouterLink>
-      </aside>
-      <div>
+      <Aside />
+      <div class="openSidebar" @click="storeCount.openSidebar" v-if="!storeCount.showAside">
+        <i class="fa-regular fa-eye"></i>
+      </div>
+      <div class="content">
         <RouterView />
       </div>
     </main>
@@ -17,7 +78,9 @@
 import { useCounterStore } from "@/stores/counter";
 import { useRouter } from "vue-router"; //import router
 import Navbar from "@/components/Navbar.vue";
-
+import PrimaryBtn from "@/components/Buttons/PrimaryBtn.vue";
+import Aside from "@/components/Aside.vue";
+import Modal from "@/components/Modals/Modal.vue";
 const storeCount = useCounterStore(); // get reference to our store
 const router = useRouter(); // get reference to our vue router
 </script>
@@ -29,13 +92,117 @@ const router = useRouter(); // get reference to our vue router
   position: relative;
   main {
     display: flex;
-    aside {
-      width: 15%;
-      height: calc(100vh - 90px);
+    position: relative;
+    .openSidebar {
+      width: 56px;
+      height: 48px;
+      border-radius: 0 100px 100px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: 0.3s ease;
       background: var(--bg2);
+      position: absolute;
+      bottom: 30px;
+      left: 0;
+      z-index: 5;
+      cursor: pointer;
+      i{
+        color: var(--white);
+      }
+      &:hover{
+        background: var(--white);
+        i{
+          color: var(--primary);
+        }
+      }
+    }
+    .content {
+      width: 100%;
+      height: 90vh;
       padding: 20px;
-      .board__number {
-        color: var(--grey);
+      overflow-y: scroll;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
+}
+//All Modals
+.add-new-task {
+  .form__control {
+    margin-bottom: 10px;
+    .form__label {
+      color: var(--white);
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .form__input {
+      width: 100%;
+      height: 40px;
+      border-radius: 8px;
+      padding: 20px;
+      outline: none;
+      font-size: 16px;
+      color: var(--primary);
+      background: none;
+      border: 1px solid var(--border);
+      transition: 0.3s ease;
+      &::placeholder {
+        color: var(--border);
+      }
+      &:focus {
+        border: 1px solid var(--primary);
+      }
+    }
+    .form__textarea {
+      width: 100%;
+      height: 120px;
+      border-radius: 8px;
+      padding: 20px;
+      outline: none;
+      font-size: 16px;
+      color: var(--primary);
+      background: none;
+      border: 1px solid var(--border);
+      transition: 0.3s ease;
+      resize: none;
+      &::placeholder {
+        color: var(--border);
+      }
+      &:focus {
+        border: 1px solid var(--primary);
+      }
+    }
+    .form__select {
+      width: 100%;
+      height: 40px;
+      padding: 0px 20px;
+      border-radius: 8px;
+      outline: none;
+      font-size: 16px;
+      color: var(--primary);
+      background: none;
+      border: 1px solid var(--border);
+      transition: 0.3s ease;
+      &:focus {
+        border: 1px solid var(--primary);
+      }
+      option {
+        font-size: 14px;
+        background: var(--bg);
+        color: var(--white);
+      }
+    }
+    .subtask {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      i {
+        margin-left: 20px;
+        font-size: 20px;
+        cursor: pointer;
+        color: var(--primary);
       }
     }
   }
