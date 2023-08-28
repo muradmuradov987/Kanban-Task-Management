@@ -64,7 +64,11 @@
     <Navbar />
     <main>
       <Aside />
-      <div class="openSidebar" @click="storeCount.openSidebar" v-if="!storeCount.showAside">
+      <div
+        class="openSidebar"
+        @click="storeCount.openSidebar"
+        v-if="!storeCount.showAside"
+      >
         <i class="fa-regular fa-eye"></i>
       </div>
       <div class="content">
@@ -107,12 +111,13 @@ const router = useRouter(); // get reference to our vue router
       left: 0;
       z-index: 5;
       cursor: pointer;
-      i{
+      box-shadow: 2px 0px 10px 2px rgba(102, 96, 195, 0.75);
+      i {
         color: var(--white);
       }
-      &:hover{
+      &:hover {
         background: var(--white);
-        i{
+        i {
           color: var(--primary);
         }
       }

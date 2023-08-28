@@ -51,7 +51,6 @@ const logOut = () => {
 </script>
 
 <style lang="scss" scoped>
-
 .nav {
   padding: 20px;
   background: var(--bg2);

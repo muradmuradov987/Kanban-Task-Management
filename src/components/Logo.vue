@@ -6,7 +6,6 @@
       <span></span>
     </div>
     <h2 class="m-0">kanban</h2>
-    <i class="fa-solid fa-angle-down d-block d-md-none"></i>
   </div>
 </template>
 
@@ -32,10 +31,6 @@
   }
   h2 {
     color: var(--white);
-  }
-  i {
-    color: var(--primary);
-    margin-left: 10px;
   }
 }
 

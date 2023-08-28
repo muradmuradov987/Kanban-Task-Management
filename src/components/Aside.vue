@@ -12,7 +12,7 @@
         class="createNewBoardBtn"
         background="var(--white)"
         color="var(--primary)"
-        buttonWidth="70%"
+        buttonWidth="auto"
         @click="storeCount.openModal('Create New Board', 'create-new-board')"
         ><i class="fa-solid fa-plus me-2"></i>
         <span>Create New Board</span></PrimaryBtn
@@ -43,9 +43,12 @@ const storeCount = useCounterStore(); // get reference to our store
 
 <style lang="scss" scoped>
 aside {
-  width: 18%;
+  width: 20%;
   height: calc(100vh - 90px);
   background: var(--bg2);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   .board__link-container {
     padding: 20px;
     padding-left: 0;
@@ -86,6 +89,7 @@ aside {
     }
     .createNewBoardBtn {
       margin-left: 20px;
+      // margin-right: 20px;
     }
   }
   .aside__footer {
@@ -153,6 +157,57 @@ aside {
         color: var(--primary);
       }
     }
+  }
+}
+
+@media (max-width: 767px) {
+  aside {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 70%;
+    height: calc(100vh - 60px);
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    box-shadow: 2px 0px 10px 2px rgba(102, 96, 195, 0.75);
+    .board__link-container {
+      height: 80%;
+      .board__number {
+        font-size: 14px;
+      }
+      .board__link {
+        padding: 10px 20px;
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1200px) {
+  aside {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40%;
+    height: calc(100vh - 60px);
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    box-shadow: 2px 0px 10px 2px rgba(102, 96, 195, 0.75);
+    .board__link-container {
+      .board__number {
+        font-size: 14px;
+      }
+      .board__link {
+        padding: 10px 20px;
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1350px) {
+  aside {
+    width: 40%;
   }
 }
 </style>
