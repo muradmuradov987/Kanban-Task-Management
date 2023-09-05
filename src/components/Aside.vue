@@ -2,12 +2,13 @@
   <aside v-if="storeCount.showAside">
     <div class="board__link-container">
       <h6 class="board__number">ALL BOARDS (3)</h6>
-      <RouterLink to="/platform-launch" class="board__link">
+      <!-- <div class="board__link">
         <i class="fa-solid fa-bolt"></i><span>Platform Launch</span>
-      </RouterLink>
-      <RouterLink to="/marketing-plan" class="board__link">
-        <i class="fa-solid fa-bolt"></i>Marketing Plan
-      </RouterLink>
+      </div> -->
+      <div class="board__link" v-for="link in storeCount.boardLink" :key="link">
+        <i class="fa-solid fa-bolt"></i><span>{{link.title}}</span>
+      </div>
+
       <PrimaryBtn
         class="createNewBoardBtn"
         background="var(--white)"
@@ -132,9 +133,6 @@ aside {
             right: 0;
             transform: translateX(130%);
           }
-        }
-        &:hover {
-          background: var(--grey);
         }
       }
     }

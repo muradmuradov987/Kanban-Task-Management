@@ -28,22 +28,7 @@ const router = createRouter({
       path: "/dashboard",
       name: "dashboard",
       component: () => import("../views/Dashboard.vue"),
-      redirect: "/platform-launch",
       meta: { requiresAuth: true },
-      children: [
-        {
-          path: "/platform-launch",
-          name: "Platform Launch",
-          component: () => import("../views/PlatformLaunch.vue"),
-          meta: { requiresAuth: true },
-        },
-        {
-          path: "/marketing-plan",
-          name: "Marketing Plan",
-          component: () => import("../views/MarketingPlan.vue"),
-          meta: { requiresAuth: true },
-        },
-      ],
     },
   ],
 });

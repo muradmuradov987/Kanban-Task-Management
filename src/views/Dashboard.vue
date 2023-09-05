@@ -56,7 +56,10 @@
         <!--Add New Task end-->
 
         <!--Create New Board-->
-        <div v-if="storeCount.modal.name == 'create-new-board'">safsafsf</div>
+        <div v-if="storeCount.modal.name == 'create-new-board'">
+          <input type="text" v-model="storeCount.linkName">
+          <button @click="storeCount.addTab(storeCount.linkName)">Add tab</button>
+        </div>
         <!--Create New Board end-->
       </template>
     </Modal>
@@ -72,7 +75,8 @@
         <i class="fa-regular fa-eye"></i>
       </div>
       <div class="content">
-        <RouterView />
+        hsaghsdh
+        <!-- <RouterView /> -->
       </div>
     </main>
   </div>

@@ -10,6 +10,9 @@ export const useCounterStore = defineStore({
       editBtn: false,
       name: "",
     },
+    // boardLink: [{ boardName: "test" }, { boardName: "test2" }],
+    boardLink: [],
+    linkName: "",
     isLoggedIn: false,
     showAside: true,
   }),
@@ -27,7 +30,11 @@ export const useCounterStore = defineStore({
       this.showAside = true;
     },
     editBtn() {
-      console.log("sdghadsbhsdgb");
+      console.log("edit");
+    },
+    // Method to add a new tab
+    addTab(title) {
+      this.boardLink.push({ title });
     },
   },
 });
