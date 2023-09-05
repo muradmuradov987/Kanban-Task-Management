@@ -57,8 +57,10 @@
 
         <!--Create New Board-->
         <div v-if="storeCount.modal.name == 'create-new-board'">
-          <input type="text" v-model="storeCount.linkName">
-          <button @click="storeCount.addTab(storeCount.linkName)">Add tab</button>
+          <input type="text" v-model="storeCount.tabInfo.tabName" />
+          <button @click="storeCount.addTab(storeCount.tabInfo.tabName)">
+            Add tab
+          </button>
         </div>
         <!--Create New Board end-->
       </template>
@@ -74,9 +76,10 @@
       >
         <i class="fa-regular fa-eye"></i>
       </div>
+
+
       <div class="content">
-        hsaghsdh
-        <!-- <RouterView /> -->
+        <DynamicTabs  />
       </div>
     </main>
   </div>
@@ -89,11 +92,13 @@ import Navbar from "@/components/Navbar.vue";
 import PrimaryBtn from "@/components/Buttons/PrimaryBtn.vue";
 import Aside from "@/components/Aside.vue";
 import Modal from "@/components/Modals/Modal.vue";
+import DynamicTabs from "@/components/DynamicTabs.vue";
 const storeCount = useCounterStore(); // get reference to our store
 const router = useRouter(); // get reference to our vue router
 </script>
 
 <style lang="scss" scoped>
+
 .dasboard__container {
   min-height: 100vh;
   background: var(--bg);
@@ -129,7 +134,6 @@ const router = useRouter(); // get reference to our vue router
     .content {
       width: 100%;
       height: 90vh;
-      padding: 20px;
       overflow-y: scroll;
       &::-webkit-scrollbar {
         display: none;

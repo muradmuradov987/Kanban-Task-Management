@@ -5,8 +5,14 @@
       <!-- <div class="board__link">
         <i class="fa-solid fa-bolt"></i><span>Platform Launch</span>
       </div> -->
-      <div class="board__link" v-for="link in storeCount.boardLink" :key="link">
-        <i class="fa-solid fa-bolt"></i><span>{{link.title}}</span>
+      <div
+        class="board__link"
+        v-for="(tab, index) in storeCount.allData"
+        :key="index"
+        :class="{ active__link: storeCount.tabInfo.selectedTabIndex === index }"
+        @click="storeCount.selectTab(index)"
+      >
+        <i class="fa-solid fa-bolt"></i><span>{{ tab.tabName }}</span>
       </div>
 
       <PrimaryBtn
@@ -75,7 +81,11 @@ aside {
       text-decoration: none;
       font-weight: 500;
       font-size: 18px;
-      transition: 0.3s ease-in-out;
+      transition: 0.3s ease;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
       i {
         margin-right: 10px;
       }
@@ -84,13 +94,12 @@ aside {
         color: var(--primary);
       }
     }
-    .router-link-active {
+    .active__link {
       background: var(--primary);
       color: var(--white);
     }
     .createNewBoardBtn {
       margin-left: 20px;
-      // margin-right: 20px;
     }
   }
   .aside__footer {

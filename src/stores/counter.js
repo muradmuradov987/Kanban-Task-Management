@@ -10,11 +10,14 @@ export const useCounterStore = defineStore({
       editBtn: false,
       name: "",
     },
-    // boardLink: [{ boardName: "test" }, { boardName: "test2" }],
-    boardLink: [],
-    linkName: "",
     isLoggedIn: false,
     showAside: true,
+
+    allData: [],
+    tabInfo: {
+      tabName: "",
+      selectedTabIndex: 0,
+    },
   }),
   actions: {
     openModal(title, name) {
@@ -33,8 +36,26 @@ export const useCounterStore = defineStore({
       console.log("edit");
     },
     // Method to add a new tab
-    addTab(title) {
-      this.boardLink.push({ title });
+    addTab(tabName) {
+      if (this.tabInfo.tabName == "") {
+        return;
+      } else {
+        this.allData.push({
+          tabName:tabName,
+          todo:[],
+          doing:[],
+          done:[]
+        })
+        this.tabInfo.tabName = "";
+      }
+
+
+
+
+    },
+    //Select tab
+    selectTab(index) {
+      this.tabInfo.selectedTabIndex = index;
     },
   },
 });
