@@ -56,13 +56,52 @@
         <!--Add New Task end-->
 
         <!--Create New Board-->
-        <div v-if="storeCount.modal.name == 'create-new-board'">
-          <input type="text" v-model="storeCount.tabInfo.tabName" />
-          <button @click="storeCount.addTab(storeCount.tabInfo.tabName)">
-            Add tab
-          </button>
+        <div
+          v-if="storeCount.modal.name == 'create-new-board'"
+          class="add-new-tab"
+        >
+          <div class="form__control">
+            <label class="form__label">Board Name</label>
+            <input
+              class="form__input"
+              type="text"
+              placeholder="e.g. Web Design"
+              v-model="storeCount.tabInfo.tabName"
+              @keydown.enter="storeCount.addTab(storeCount.tabInfo.tabName)"
+            />
+          </div>
+          <PrimaryBtn
+            buttonWidth="100%"
+            background="var(--primary)"
+            color="var(--white)"
+            @click="storeCount.addTab(storeCount.tabInfo.tabName)"
+            ><i class="fa-solid fa-plus me-2"></i> Create New Board</PrimaryBtn
+          >
         </div>
         <!--Create New Board end-->
+
+        <!--Create New Board Column-->
+        <div
+          v-if="storeCount.modal.name == 'create-board-column'"
+          class="add-new-tab"
+        >
+          <div class="form__control">
+            <label class="form__label">Column Name</label>
+            <input
+              class="form__input"
+              type="text"
+              v-model="storeCount.colName"
+            />
+          </div>
+          <PrimaryBtn
+            buttonWidth="100%"
+            background="var(--primary)"
+            color="var(--white)"
+            @click="storeCount.addColumn()"
+            ><i class="fa-solid fa-plus me-2"></i> Add New Column</PrimaryBtn
+          >
+        </div>
+        <!--Create New Board Column end-->
       </template>
     </Modal>
 
@@ -76,10 +115,8 @@
       >
         <i class="fa-regular fa-eye"></i>
       </div>
-
-
       <div class="content">
-        <DynamicTabs  />
+        <DynamicTabs />
       </div>
     </main>
   </div>
@@ -98,7 +135,6 @@ const router = useRouter(); // get reference to our vue router
 </script>
 
 <style lang="scss" scoped>
-
 .dasboard__container {
   min-height: 100vh;
   background: var(--bg);
@@ -133,11 +169,6 @@ const router = useRouter(); // get reference to our vue router
     }
     .content {
       width: 100%;
-      height: 90vh;
-      overflow-y: scroll;
-      &::-webkit-scrollbar {
-        display: none;
-      }
     }
   }
 }
@@ -216,6 +247,82 @@ const router = useRouter(); // get reference to our vue router
         font-size: 20px;
         cursor: pointer;
         color: var(--primary);
+      }
+    }
+  }
+}
+
+.add-new-tab {
+  .form__control {
+    margin-bottom: 10px;
+    .form__label {
+      color: var(--white);
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .form__input {
+      width: 100%;
+      height: 40px;
+      border-radius: 8px;
+      padding: 20px;
+      outline: none;
+      font-size: 16px;
+      color: var(--primary);
+      background: none;
+      border: 1px solid var(--border);
+      transition: 0.3s ease;
+      &::placeholder {
+        color: var(--border);
+      }
+      &:focus {
+        border: 1px solid var(--primary);
+      }
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  //All Modals
+  .add-new-task {
+    .form__control {
+      margin-bottom: 10px;
+      .form__label {
+        font-size: 12px;
+        margin-bottom: 5px;
+      }
+      .form__input {
+        width: 100%;
+        height: 35px;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 14px;
+      }
+      .form__textarea {
+        height: 80px;
+        padding: 15px;
+        font-size: 14px;
+      }
+      .form__select {
+        height: 35px;
+        padding: 0px 15px;
+        outline: none;
+        font-size: 14px;
+      }
+    }
+  }
+  .add-new-tab {
+    .form__control {
+      margin-bottom: 10px;
+      .form__label {
+        font-size: 12px;
+        margin-bottom: 5px;
+      }
+      .form__input {
+        width: 100%;
+        height: 35px;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 14px;
       }
     }
   }

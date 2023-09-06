@@ -2,9 +2,6 @@
   <aside v-if="storeCount.showAside">
     <div class="board__link-container">
       <h6 class="board__number">ALL BOARDS (3)</h6>
-      <!-- <div class="board__link">
-        <i class="fa-solid fa-bolt"></i><span>Platform Launch</span>
-      </div> -->
       <div
         class="board__link"
         v-for="(tab, index) in storeCount.allData"
@@ -39,11 +36,12 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, } from "vue";
 import { useCounterStore } from "@/stores/counter";
 import PrimaryBtn from "@/components/Buttons/PrimaryBtn.vue";
 
 const storeCount = useCounterStore(); // get reference to our store
+
 </script>
 
 

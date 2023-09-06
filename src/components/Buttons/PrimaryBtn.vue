@@ -1,5 +1,5 @@
 <template>
-  <button :style="{ width: buttonWidth, background:background, color: color  }" class="loginBtn" @click="handleClick">
+  <button :style="{ width: buttonWidth, background:background, color: color  }" class="primaryBtn" @click="handleClick">
     <slot></slot>
   </button>
 </template>
@@ -17,7 +17,7 @@ const handleClick = () => {
 </script>
 
 <style lang="scss" scoped>
-.loginBtn {
+.primaryBtn {
   margin: 30px 0;
   padding: 10px;
   border-radius: 8px;

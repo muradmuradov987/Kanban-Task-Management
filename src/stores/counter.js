@@ -14,6 +14,7 @@ export const useCounterStore = defineStore({
     showAside: true,
 
     allData: [],
+    colName: '',
     tabInfo: {
       tabName: "",
       selectedTabIndex: 0,
@@ -26,14 +27,22 @@ export const useCounterStore = defineStore({
       this.modal.name = name;
       // this.modal.editBtn = edit;
     },
+    closeModal() {
+      this.modal.show = false;
+      this.modal.title = "";
+      this.modal.name = "";
+      this.resetData()
+    },
+
     hideSidebar() {
       this.showAside = false;
     },
     openSidebar() {
       this.showAside = true;
     },
-    editBtn() {
-      console.log("edit");
+    resetData() {
+     this.colName = ''
+     this.tabInfo.tabName = ''
     },
     // Method to add a new tab
     addTab(tabName) {
@@ -41,17 +50,24 @@ export const useCounterStore = defineStore({
         return;
       } else {
         this.allData.push({
-          tabName:tabName,
-          todo:[],
-          doing:[],
-          done:[]
-        })
+          tabName: tabName,
+          taskRow: {
+            Todo: [],
+            Doing: [],
+            Done: [],
+          },
+        });
         this.tabInfo.tabName = "";
       }
+      this.closeModal();
+    },
 
-
-
-
+    //Add new column
+    addColumn(){
+     
+      // this.allData[this.tabInfo.selectedTabIndex].taskRow.assign(
+      //   this.colName : []
+      // )
     },
     //Select tab
     selectTab(index) {
