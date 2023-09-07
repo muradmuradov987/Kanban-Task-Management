@@ -1,17 +1,16 @@
 <template>
   <aside v-if="storeCount.showAside">
     <div class="board__link-container">
-      <h6 class="board__number">ALL BOARDS (3)</h6>
+      <h6 class="board__number">ALL BOARDS ({{storeCount.allData.length}})</h6>
       <div
         class="board__link"
         v-for="(tab, index) in storeCount.allData"
         :key="index"
-        :class="{ active__link: storeCount.tabInfo.selectedTabIndex === index }"
+        :class="{ active__link: storeCount.boardInfo.selectedTabIndex === index }"
         @click="storeCount.selectTab(index)"
       >
-        <i class="fa-solid fa-bolt"></i><span>{{ tab.tabName }}</span>
+        <i class="fa-solid fa-bolt"></i><span>{{ tab.boardName }}</span>
       </div>
-
       <PrimaryBtn
         class="createNewBoardBtn"
         background="var(--white)"
@@ -54,6 +53,7 @@ aside {
   display: flex;
   flex-direction: column;
   gap: 20px;
+   z-index: 10;
   .board__link-container {
     padding: 20px;
     padding-left: 0;

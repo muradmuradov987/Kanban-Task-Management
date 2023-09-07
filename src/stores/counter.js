@@ -14,12 +14,15 @@ export const useCounterStore = defineStore({
     showAside: true,
 
     allData: [],
-    colName: '',
-    tabInfo: {
-      tabName: "",
+    colName: "",
+    emptyField: false,
+    sameColname: false,
+    boardInfo: {
+      boardName: "",
       selectedTabIndex: 0,
     },
   }),
+  getters: {},
   actions: {
     openModal(title, name) {
       this.modal.show = true;
@@ -31,7 +34,7 @@ export const useCounterStore = defineStore({
       this.modal.show = false;
       this.modal.title = "";
       this.modal.name = "";
-      this.resetData()
+      this.resetData();
     },
 
     hideSidebar() {
@@ -41,37 +44,63 @@ export const useCounterStore = defineStore({
       this.showAside = true;
     },
     resetData() {
-     this.colName = ''
-     this.tabInfo.tabName = ''
+      this.colName = "";
+      this.boardInfo.boardName = "";
+      this.emptyField = false;
+      this.sameColname = false;
     },
-    // Method to add a new tab
-    addTab(tabName) {
-      if (this.tabInfo.tabName == "") {
+
+    addBoard(boardName) {
+      if (this.boardInfo.boardName == "") {
         return;
       } else {
         this.allData.push({
-          tabName: tabName,
+          boardName: boardName,
           taskRow: {
             Todo: [],
             Doing: [],
             Done: [],
           },
         });
-        this.tabInfo.tabName = "";
+        this.boardInfo.boardName = "";
       }
       this.closeModal();
     },
 
+    deleteBoard() {
+      this.allData.splice(this.boardInfo.selectedTabIndex, 1);
+
+      this.closeModal();
+      if ((this.boardInfo.selectedTabIndex = 0)) {
+        this.boardInfo.selectedTabIndex = 0;
+      } else {
+        this.boardInfo.selectedTabIndex - 1;
+      }
+    },
+
     //Add new column
-    addColumn(){
-     
-      // this.allData[this.tabInfo.selectedTabIndex].taskRow.assign(
-      //   this.colName : []
-      // )
+    addColumn() {
+      let taskRow = this.allData[this.boardInfo.selectedTabIndex].taskRow;
+
+      var calNames = [];
+      for (let i in taskRow) {
+        calNames.push(i);
+      }
+      if (this.colName === "") {
+        this.emptyField = true;
+        this.sameColname = false;
+      } else if (calNames.includes(this.colName)) {
+        this.emptyField = false;
+        this.sameColname = true;
+      } else {
+        this.allData[this.boardInfo.selectedTabIndex].taskRow[this.colName] =
+          [];
+        this.closeModal();
+      }
     },
     //Select tab
     selectTab(index) {
-      this.tabInfo.selectedTabIndex = index;
+      this.boardInfo.selectedTabIndex = index;
     },
   },
 });

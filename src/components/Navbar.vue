@@ -5,10 +5,26 @@
     <h3 class="nav__title">Platform Launch</h3>
     <div class="nav__right">
       <PrimaryBtn
+        v-if="storeCount.allData.length > 0"
         class="addTaskBtn"
         @click="storeCount.openModal('Add New Task', 'add-new-task')"
         ><i class="fa-solid fa-plus"></i> <span>Add New Task</span></PrimaryBtn
       >
+      <div
+        class="editBtn"
+        @click="toggleEditMenu"
+        v-if="storeCount.allData.length > 0"
+      >
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+        <div class="edit__menu" v-if="showEditMenu">
+          <span class="editBoard">Edit board</span>
+          <span
+            class="deleteBoard"
+            @click="storeCount.openModal('Delete this board?', 'delete-board')"
+            >Delete board</span
+          >
+        </div>
+      </div>
       <div class="profile" @click="toggleProfile">
         MM
         <div class="profile__menu" v-if="showProfileMenu">
@@ -32,14 +48,21 @@ import { useRouter } from "vue-router"; //import router
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import Logo from "@/components/Logo.vue";
 import PrimaryBtn from "@/components/Buttons/PrimaryBtn.vue";
-import Modal from "@/components/Modals/Modal.vue";
 
 const router = useRouter(); // get reference to our vue router
 const storeCount = useCounterStore(); // get reference to our store
 
 const showProfileMenu = ref(false);
-const toggleProfile = () => {
+const showEditMenu = ref(false);
+
+const toggleProfile = (e) => {
+  showEditMenu.value = false;
   showProfileMenu.value = !showProfileMenu.value;
+};
+
+const toggleEditMenu = (e) => {
+  showProfileMenu.value = false;
+  showEditMenu.value = !showEditMenu.value;
 };
 
 //Log out profile
@@ -64,10 +87,40 @@ const logOut = () => {
   .nav__right {
     display: flex;
     align-items: center;
+    gap: 20px;
     .addTaskBtn {
       margin: 0;
       span {
         margin-left: 10px;
+      }
+    }
+    .editBtn {
+      cursor: pointer;
+      position: relative;
+      i {
+        color: var(--primary);
+        font-size: 30px;
+      }
+      .edit__menu {
+        width: 130px;
+        background: var(--bg2);
+        position: absolute;
+        right: 0px;
+        border: 1px solid var(--primary);
+        box-shadow: -1px 1px 10px 1px rgba(102, 96, 195, 0.75);
+        border-radius: 10px;
+        padding: 20px 10px;
+        top: calc(100% + 40px);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 5;
+        .editBoard {
+          color: var(--grey);
+        }
+        .deleteBoard {
+          color: var(--red);
+        }
       }
     }
     .profile {
@@ -80,16 +133,19 @@ const logOut = () => {
       justify-content: center;
       color: var(--primary);
       font-size: 18px;
-      margin-left: 20px;
       cursor: pointer;
       transition: 0.3s ease;
       position: relative;
+      &:hover {
+        box-shadow: -1px 1px 10px 1px rgba(102, 96, 195, 0.75);
+      }
       .profile__menu {
         width: 250px;
         background: var(--bg2);
         position: absolute;
         right: 0px;
         border: 1px solid var(--primary);
+        box-shadow: -1px 1px 10px 1px rgba(102, 96, 195, 0.75);
         border-radius: 10px;
         padding: 10px 0px;
         top: calc(100% + 30px);
@@ -165,7 +221,6 @@ const logOut = () => {
         width: 40px;
         height: 40px;
         font-size: 14px;
-        margin-left: 10px;
         .profile__menu {
           width: 200px;
           border-radius: 6px;

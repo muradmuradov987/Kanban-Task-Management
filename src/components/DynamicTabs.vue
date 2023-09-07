@@ -1,18 +1,17 @@
 <template>
   <div v-for="(item, index) in storeCount.allData" :key="index">
     <section
-      v-if="storeCount.tabInfo.selectedTabIndex === index"
+      v-if="storeCount.boardInfo.selectedTabIndex === index"
       class="content__container"
     >
       <h3 class="tab__title" v-if="!storeCount.showAside">
-        {{ item.tabName }}
+        {{ item.boardName }}
       </h3>
 
       <div class="row__container">
         <div v-for="(tasks, index) in item.taskRow" :key="index">
-          <!-- <h1 v-for="taskRow in item.taskRow" :key="taskRow">test</h1> -->
           <div class="task__column">
-            <p class="col__name">{{ index }} (4)</p>
+            <p class="col__name">{{ index }} ({{tasks.length}})</p>
             <div class="task__card">
               <h3>Build UI for search</h3>
               <p>0 of 1 subtask</p>
@@ -23,7 +22,12 @@
             </div>
           </div>
         </div>
-        <div class="create__new-col" @click="storeCount.openModal('Create Board Column', 'create-board-column')">
+        <div
+          class="create__new-col"
+          @click="
+            storeCount.openModal('Create Board Column', 'create-board-column')
+          "
+        >
           <i class="fa-solid fa-plus"></i> <span> New Column</span>
         </div>
       </div>
@@ -40,13 +44,9 @@ const storeCount = useCounterStore(); // get reference to our store
 
 <style lang="scss" scoped>
 .content__container {
-  height: calc(100vh - 90px);
+  width: 100%;
+  height: calc(100vh - 110px);
   padding: 20px;
-  position: relative;
-  overflow-y: scroll;
-  &::-webkit-scrollbar {
-    display: none;
-  }
   .tab__title {
     color: var(--primary);
   }
@@ -54,8 +54,12 @@ const storeCount = useCounterStore(); // get reference to our store
     display: flex;
     gap: 20px;
     width: 100%;
+    padding-bottom: 50px;
     .task__column {
       width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
       .col__name {
         font-size: 12px;
         font-weight: 700;
@@ -66,7 +70,6 @@ const storeCount = useCounterStore(); // get reference to our store
       .task__card {
         border-radius: 8px;
         box-shadow: -1px 1px 10px 1px rgba(102, 96, 195, 0.75);
-        margin-bottom: 20px;
         padding: 20px 15px;
         background: var(--bg2);
         cursor: pointer;
@@ -91,9 +94,9 @@ const storeCount = useCounterStore(); // get reference to our store
       }
     }
     .create__new-col {
-      margin-top: 40px;
       width: 280px;
       height: 200px;
+      margin-top: 60px;
       padding: 20px 15px;
       background: var(--bg2);
       display: flex;
@@ -123,5 +126,8 @@ const storeCount = useCounterStore(); // get reference to our store
       }
     }
   }
+}
+
+@media (max-width: 767px) {
 }
 </style>

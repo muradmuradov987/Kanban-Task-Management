@@ -46,14 +46,15 @@ const closeBackdrop = (e) => {
   top: 0;
   left: 0;
   z-index: 100;
-  padding: 50px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   .modal__container {
     max-width: 500px;
     width: 500px;
     background: var(--bg2);
     z-index: 5;
     border-radius: 14px;
-    margin: 0 auto;
     .modal__header {
       display: flex;
       justify-content: space-between;

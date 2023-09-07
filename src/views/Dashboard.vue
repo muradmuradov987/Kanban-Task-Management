@@ -55,6 +55,36 @@
         </div>
         <!--Add New Task end-->
 
+        <!--Edit Menu-->
+        <div
+          v-if="storeCount.modal.name == 'delete-board'"
+          class="delete-board"
+        >
+          <p class="deleteInfo">
+            Are you sure you want to delete the "Platform Launch" board? This
+            action will remove all columns and tasks and cannot be reversed.
+          </p>
+          <div class="btnsGroup">
+            <PrimaryBtn
+              buttonWidth="100%"
+              background="var(--red)"
+              color="var(--white)"
+              @click="storeCount.deleteBoard"
+            >
+              Delete</PrimaryBtn
+            >
+            <PrimaryBtn
+              buttonWidth="100%"
+              background="var(--primary)"
+              color="var(--white)"
+              @click="storeCount.closeModal()"
+            >
+              Cancel</PrimaryBtn
+            >
+          </div>
+        </div>
+        <!--Edit Menu end-->
+
         <!--Create New Board-->
         <div
           v-if="storeCount.modal.name == 'create-new-board'"
@@ -66,15 +96,15 @@
               class="form__input"
               type="text"
               placeholder="e.g. Web Design"
-              v-model="storeCount.tabInfo.tabName"
-              @keydown.enter="storeCount.addTab(storeCount.tabInfo.tabName)"
+              v-model="storeCount.boardInfo.boardName"
+              @keydown.enter="storeCount.addBoard(storeCount.boardInfo.boardName)"
             />
           </div>
           <PrimaryBtn
             buttonWidth="100%"
             background="var(--primary)"
             color="var(--white)"
-            @click="storeCount.addTab(storeCount.tabInfo.tabName)"
+            @click="storeCount.addBoard(storeCount.boardInfo.boardName)"
             ><i class="fa-solid fa-plus me-2"></i> Create New Board</PrimaryBtn
           >
         </div>
@@ -91,7 +121,14 @@
               class="form__input"
               type="text"
               v-model="storeCount.colName"
+              @keydown.enter="storeCount.addColumn()"
             />
+            <span class="input__info" v-if="storeCount.emptyField"
+              >Can't be empty</span
+            >
+            <span class="input__info" v-if="storeCount.sameColname"
+              >This column Name is already used</span
+            >
           </div>
           <PrimaryBtn
             buttonWidth="100%"
@@ -108,17 +145,17 @@
     <Navbar />
     <main>
       <Aside />
-      <div
-        class="openSidebar"
-        @click="storeCount.openSidebar"
-        v-if="!storeCount.showAside"
-      >
-        <i class="fa-regular fa-eye"></i>
-      </div>
       <div class="content">
         <DynamicTabs />
       </div>
     </main>
+    <div
+      class="openSidebar"
+      @click="storeCount.openSidebar"
+      v-if="!storeCount.showAside"
+    >
+      <i class="fa-regular fa-eye"></i>
+    </div>
   </div>
 </template>
 
@@ -142,33 +179,40 @@ const router = useRouter(); // get reference to our vue router
   main {
     display: flex;
     position: relative;
-    .openSidebar {
-      width: 56px;
-      height: 48px;
-      border-radius: 0 100px 100px 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: 0.3s ease;
-      background: var(--bg2);
-      position: absolute;
-      bottom: 30px;
-      left: 0;
-      z-index: 5;
-      cursor: pointer;
-      box-shadow: 2px 0px 10px 2px rgba(102, 96, 195, 0.75);
-      i {
-        color: var(--white);
-      }
-      &:hover {
-        background: var(--white);
-        i {
-          color: var(--primary);
-        }
-      }
-    }
     .content {
       width: 100%;
+      overflow: auto;
+      &::-webkit-scrollbar {
+        width: 10px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: var(--primary);
+      }
+    }
+  }
+  .openSidebar {
+    width: 56px;
+    height: 48px;
+    border-radius: 0 100px 100px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s ease;
+    background: var(--bg2);
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    z-index: 5;
+    cursor: pointer;
+    box-shadow: 2px 0px 10px 2px rgba(102, 96, 195, 0.75);
+    i {
+      color: var(--white);
+    }
+    &:hover {
+      background: var(--white);
+      i {
+        color: var(--primary);
+      }
     }
   }
 }
@@ -266,6 +310,7 @@ const router = useRouter(); // get reference to our vue router
       border-radius: 8px;
       padding: 20px;
       outline: none;
+      margin-bottom: 10px;
       font-size: 16px;
       color: var(--primary);
       background: none;
@@ -278,6 +323,19 @@ const router = useRouter(); // get reference to our vue router
         border: 1px solid var(--primary);
       }
     }
+    .input__info {
+      color: var(--red);
+      font-size: 14px;
+    }
+  }
+}
+.delete-board {
+  .deleteInfo {
+    color: var(--grey);
+  }
+  .btnsGroup {
+    display: flex;
+    gap: 70px;
   }
 }
 
