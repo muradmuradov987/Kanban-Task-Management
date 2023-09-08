@@ -17,7 +17,7 @@
       >
         <i class="fa-solid fa-ellipsis-vertical"></i>
         <div class="edit__menu" v-if="showEditMenu">
-          <span class="editBoard">Edit board</span>
+          <span class="editBoard" @click="storeCount.openModal('Edit board', 'edit-board')">Edit board</span>
           <span
             class="deleteBoard"
             @click="storeCount.openModal('Delete this board?', 'delete-board')"

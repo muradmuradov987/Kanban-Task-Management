@@ -15,7 +15,11 @@ export const useCounterStore = defineStore({
 
     allData: [],
     colName: "",
-    emptyField: false,
+    validationField: {
+      boardField: false,
+      editBoardField: false,
+      columnField: false,
+    },
     sameColname: false,
     boardInfo: {
       boardName: "",
@@ -46,51 +50,67 @@ export const useCounterStore = defineStore({
     resetData() {
       this.colName = "";
       this.boardInfo.boardName = "";
-      this.emptyField = false;
       this.sameColname = false;
+      this.validationField.boardField = false;
+      this.validationField.editBoardField = false;
+      this.validationField.columnField = false;
+      this.allData[this.boardInfo.selectedTabIndex].editBoardName =
+      this.allData[this.boardInfo.selectedTabIndex].boardName;
     },
 
     addBoard(boardName) {
-      if (this.boardInfo.boardName == "") {
-        return;
+      if (this.boardInfo.boardName === "") {
+        this.validationField.boardField = true;
       } else {
         this.allData.push({
           boardName: boardName,
+          editBoardName: boardName,
           taskRow: {
             Todo: [],
             Doing: [],
             Done: [],
           },
         });
-        this.boardInfo.boardName = "";
+        this.closeModal();
       }
-      this.closeModal();
+    },
+
+    saveEditBoard() {
+      if (this.allData[this.boardInfo.selectedTabIndex].editBoardName === "") {
+        this.validationField.editBoardField = true;
+      } else {
+        this.allData[this.boardInfo.selectedTabIndex].boardName =
+          this.allData[this.boardInfo.selectedTabIndex].editBoardName;
+        this.closeModal();
+      }
     },
 
     deleteBoard() {
-      this.allData.splice(this.boardInfo.selectedTabIndex, 1);
 
-      this.closeModal();
       if ((this.boardInfo.selectedTabIndex = 0)) {
         this.boardInfo.selectedTabIndex = 0;
       } else {
-        this.boardInfo.selectedTabIndex - 1;
+        // this.boardInfo.selectedTabIndex - 1;
       }
+      this.allData.splice(this.boardInfo.selectedTabIndex, 1);
+
+
+      this.closeModal();
+
     },
 
     //Add new column
     addColumn() {
       let taskRow = this.allData[this.boardInfo.selectedTabIndex].taskRow;
-
       var calNames = [];
       for (let i in taskRow) {
         calNames.push(i);
       }
       if (this.colName === "") {
-        this.emptyField = true;
+        this.validationField.columnField = true;
         this.sameColname = false;
       } else if (calNames.includes(this.colName)) {
-        this.emptyField = false;
+        this.validationField.columnField = false;
         this.sameColname = true;
       } else {
         this.allData[this.boardInfo.selectedTabIndex].taskRow[this.colName] =

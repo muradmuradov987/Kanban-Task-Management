@@ -11,7 +11,9 @@
       <div class="row__container">
         <div v-for="(tasks, index) in item.taskRow" :key="index">
           <div class="task__column">
-            <p class="col__name">{{ index }} ({{tasks.length}})</p>
+            <p class="col__name">
+              <span class="col__status">{{ index }}</span> <span>({{ tasks.length }})</span>
+            </p>
             <div class="task__card">
               <h3>Build UI for search</h3>
               <p>0 of 1 subtask</p>
@@ -60,12 +62,21 @@ const storeCount = useCounterStore(); // get reference to our store
       display: flex;
       flex-direction: column;
       gap: 20px;
+      white-space: wrap;
+
+      // background: red;
       .col__name {
         font-size: 12px;
         font-weight: 700;
         letter-spacing: 2.4px;
         color: var(--grey);
         margin-bottom: 24px;
+        display: flex;
+        gap: 10px;
+        .col__status {
+          max-width: 90%;
+          overflow: hidden;
+        }
       }
       .task__card {
         border-radius: 8px;
@@ -129,5 +140,8 @@ const storeCount = useCounterStore(); // get reference to our store
 }
 
 @media (max-width: 767px) {
+  .content__container {
+    height: calc(100vh - 80px);
+  }
 }
 </style>

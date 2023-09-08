@@ -7,7 +7,7 @@
 <script setup>
 import { defineProps } from "vue";
 
-const { buttonWidth, background,color, onClick } = defineProps(["buttonWidth","background","color", "onclick"]);
+const { buttonWidth, background,color,  onClick } = defineProps(["buttonWidth","background","color",  "onclick"]);
 
 const handleClick = () => {
   if (typeof onClick === "function") {

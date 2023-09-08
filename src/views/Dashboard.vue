@@ -55,7 +55,36 @@
         </div>
         <!--Add New Task end-->
 
-        <!--Edit Menu-->
+        <!--Edit Board-->
+        <div v-if="storeCount.modal.name == 'edit-board'" class="edit-board">
+          <div class="form__control">
+            <label class="form__label">Board Name</label>
+            <input
+              class="form__input"
+              type="text"
+              v-model="
+                storeCount.allData[storeCount.boardInfo.selectedTabIndex]
+                  .editBoardName
+              "
+            />
+            <span
+              class="input__info"
+              v-if="storeCount.validationField.editBoardField"
+              >Can't be empty</span
+            >
+          </div>
+          <PrimaryBtn
+            buttonWidth="100%"
+            background="var(--primary)"
+            color="var(--white)"
+            @click="storeCount.saveEditBoard()"
+          >
+            Save Changes</PrimaryBtn
+          >
+        </div>
+        <!--Edit Board end-->
+
+        <!--Delete Board-->
         <div
           v-if="storeCount.modal.name == 'delete-board'"
           class="delete-board"
@@ -83,7 +112,7 @@
             >
           </div>
         </div>
-        <!--Edit Menu end-->
+        <!--Delete Board end-->
 
         <!--Create New Board-->
         <div
@@ -97,8 +126,15 @@
               type="text"
               placeholder="e.g. Web Design"
               v-model="storeCount.boardInfo.boardName"
-              @keydown.enter="storeCount.addBoard(storeCount.boardInfo.boardName)"
+              @keydown.enter="
+                storeCount.addBoard(storeCount.boardInfo.boardName)
+              "
             />
+            <span
+              class="input__info"
+              v-if="storeCount.validationField.boardField"
+              >Can't be empty</span
+            >
           </div>
           <PrimaryBtn
             buttonWidth="100%"
@@ -123,7 +159,9 @@
               v-model="storeCount.colName"
               @keydown.enter="storeCount.addColumn()"
             />
-            <span class="input__info" v-if="storeCount.emptyField"
+            <span
+              class="input__info"
+              v-if="storeCount.validationField.columnField"
               >Can't be empty</span
             >
             <span class="input__info" v-if="storeCount.sameColname"
@@ -329,6 +367,41 @@ const router = useRouter(); // get reference to our vue router
     }
   }
 }
+
+.edit-board {
+  .form__control {
+    margin-bottom: 10px;
+    .form__label {
+      color: var(--white);
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .form__input {
+      width: 100%;
+      height: 40px;
+      border-radius: 8px;
+      padding: 20px;
+      outline: none;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: var(--primary);
+      background: none;
+      border: 1px solid var(--border);
+      transition: 0.3s ease;
+      &::placeholder {
+        color: var(--border);
+      }
+      &:focus {
+        border: 1px solid var(--primary);
+      }
+    }
+    .input__info {
+      color: var(--red);
+      font-size: 14px;
+    }
+  }
+}
+
 .delete-board {
   .deleteInfo {
     color: var(--grey);

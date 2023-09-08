@@ -15,6 +15,7 @@
         class="createNewBoardBtn"
         background="var(--white)"
         color="var(--primary)"
+        radius="50px"
         buttonWidth="auto"
         @click="storeCount.openModal('Create New Board', 'create-new-board')"
         ><i class="fa-solid fa-plus me-2"></i>
@@ -86,6 +87,9 @@ aside {
       align-items: center;
       i {
         margin-right: 10px;
+      }
+      span{
+        overflow: hidden;
       }
       &:hover {
         background: var(--white);
