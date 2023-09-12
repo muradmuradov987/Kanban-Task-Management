@@ -62,6 +62,7 @@
             <input
               class="form__input"
               type="text"
+              @keydown.enter="storeCount.saveEditBoard()"
               v-model="
                 storeCount.allData[storeCount.boardInfo.selectedTabIndex]
                   .editBoardName
@@ -72,6 +73,19 @@
               v-if="storeCount.validationField.editBoardField"
               >Can't be empty</span
             >
+          </div>
+          <div>
+            <div class="form__control">
+              <label class="form__label">Board Columns</label>
+              <div class="mb-3" v-for="(colList, key) in storeCount.allData[storeCount.boardInfo.selectedTabIndex].taskRow" :key="key">
+                <div class="col__list">
+                  <h1>{{key}}</h1>
+                  <input class="form__input" type="text" v-model="storeCount.allData[storeCount.boardInfo.selectedTabIndex].taskRow[key]" />
+                  <i class="fa-solid fa-xmark"></i>
+                </div>
+                <span class="input__info">Can't be empty</span>
+              </div>
+            </div>
           </div>
           <PrimaryBtn
             buttonWidth="100%"
@@ -370,7 +384,7 @@ const router = useRouter(); // get reference to our vue router
 
 .edit-board {
   .form__control {
-    margin-bottom: 10px;
+    margin-bottom: 50px;
     .form__label {
       color: var(--white);
       font-size: 14px;
@@ -382,7 +396,6 @@ const router = useRouter(); // get reference to our vue router
       border-radius: 8px;
       padding: 20px;
       outline: none;
-      margin-bottom: 10px;
       font-size: 16px;
       color: var(--primary);
       background: none;
@@ -393,6 +406,16 @@ const router = useRouter(); // get reference to our vue router
       }
       &:focus {
         border: 1px solid var(--primary);
+      }
+    }
+    .col__list {
+      display: flex;
+      align-items: center;
+      i{
+        margin-left: 20px;
+        color: var(--white);
+        font-size: 20px;
+        cursor: pointer;
       }
     }
     .input__info {

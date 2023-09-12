@@ -12,6 +12,8 @@ export const useCounterStore = defineStore({
     },
     isLoggedIn: false,
     showAside: true,
+    showProfileMenu: false,
+    showEditMenu: false,
 
     allData: [],
     colName: "",
@@ -47,6 +49,16 @@ export const useCounterStore = defineStore({
     openSidebar() {
       this.showAside = true;
     },
+
+    toggleProfile() {
+      this.showEditMenu = false;
+      this.showProfileMenu = !this.showProfileMenu;
+    },
+    toggleEditMenu() {
+      this.showProfileMenu = false;
+      this.showEditMenu = !this.showEditMenu;
+    },
+
     resetData() {
       this.colName = "";
       this.boardInfo.boardName = "";
@@ -54,8 +66,6 @@ export const useCounterStore = defineStore({
       this.validationField.boardField = false;
       this.validationField.editBoardField = false;
       this.validationField.columnField = false;
-      this.allData[this.boardInfo.selectedTabIndex].editBoardName =
-      this.allData[this.boardInfo.selectedTabIndex].boardName;
     },
 
     addBoard(boardName) {
@@ -71,8 +81,10 @@ export const useCounterStore = defineStore({
             Done: [],
           },
         });
+        this.resetData();
         this.closeModal();
       }
+      console.log(Object.keys(this.allData[this.boardInfo.selectedTabIndex].taskRow));
     },
 
     saveEditBoard() {
@@ -86,17 +98,17 @@ export const useCounterStore = defineStore({
     },
 
     deleteBoard() {
-
-      if ((this.boardInfo.selectedTabIndex = 0)) {
-        this.boardInfo.selectedTabIndex = 0;
+      let arrLength = this.allData.length - 1;
+      if (arrLength === this.boardInfo.selectedTabIndex) {
+        this.allData.splice(this.boardInfo.selectedTabIndex, 1);
+        this.boardInfo.selectedTabIndex = this.boardInfo.selectedTabIndex - 1;
       } else {
-        // this.boardInfo.selectedTabIndex - 1;
+        this.allData.splice(this.boardInfo.selectedTabIndex, 1);
       }
-      this.allData.splice(this.boardInfo.selectedTabIndex, 1);
-
-
+      if (this.boardInfo.selectedTabIndex === -1) {
+        this.boardInfo.selectedTabIndex = 0;
+      }
       this.closeModal();
-
     },
 
     //Add new column
@@ -118,6 +130,7 @@ export const useCounterStore = defineStore({
         this.closeModal();
       }
     },
+
     //Select tab
     selectTab(index) {
       this.boardInfo.selectedTabIndex = index;

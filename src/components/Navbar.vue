@@ -12,11 +12,11 @@
       >
       <div
         class="editBtn"
-        @click="toggleEditMenu"
+        @click="storeCount.toggleEditMenu"
         v-if="storeCount.allData.length > 0"
       >
         <i class="fa-solid fa-ellipsis-vertical"></i>
-        <div class="edit__menu" v-if="showEditMenu">
+        <div class="edit__menu" v-if="storeCount.showEditMenu">
           <span class="editBoard" @click="storeCount.openModal('Edit board', 'edit-board')">Edit board</span>
           <span
             class="deleteBoard"
@@ -25,9 +25,9 @@
           >
         </div>
       </div>
-      <div class="profile" @click="toggleProfile">
+      <div class="profile" @click="storeCount.toggleProfile">
         MM
-        <div class="profile__menu" v-if="showProfileMenu">
+        <div class="profile__menu" v-if="storeCount.showProfileMenu">
           <span class="username">Murad Muradov</span>
           <RouterLink to="/dashboard"
             ><i class="fa-solid fa-gear"></i>Settings</RouterLink
@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+// import { ref } from "vue";
 import { useCounterStore } from "@/stores/counter";
 import { useRouter } from "vue-router"; //import router
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
@@ -52,18 +52,11 @@ import PrimaryBtn from "@/components/Buttons/PrimaryBtn.vue";
 const router = useRouter(); // get reference to our vue router
 const storeCount = useCounterStore(); // get reference to our store
 
-const showProfileMenu = ref(false);
-const showEditMenu = ref(false);
 
-const toggleProfile = (e) => {
-  showEditMenu.value = false;
-  showProfileMenu.value = !showProfileMenu.value;
-};
 
-const toggleEditMenu = (e) => {
-  showProfileMenu.value = false;
-  showEditMenu.value = !showEditMenu.value;
-};
+
+
+
 
 //Log out profile
 const logOut = () => {
