@@ -4,12 +4,15 @@
     <Logo />
     <h3 class="nav__title">Platform Launch</h3>
     <div class="nav__right">
-      <PrimaryBtn
-        v-if="storeCount.allData.length > 0"
-        class="addTaskBtn"
-        @click="storeCount.openModal('Add New Task', 'add-new-task')"
-        ><i class="fa-solid fa-plus"></i> <span>Add New Task</span></PrimaryBtn
-      >
+      <div v-if="storeCount.allData[storeCount.boardInfo.selectedTabIndex]?.taskRow.length > 0">
+        <PrimaryBtn
+          v-if="storeCount.allData.length > 0"
+          class="addTaskBtn"
+          @click="storeCount.openModal('Add New Task', 'add-new-task')"
+          ><i class="fa-solid fa-plus"></i>
+          <span>Add New Task</span></PrimaryBtn
+        >
+      </div>
       <div
         class="editBtn"
         @click="storeCount.toggleEditMenu"
@@ -17,7 +20,11 @@
       >
         <i class="fa-solid fa-ellipsis-vertical"></i>
         <div class="edit__menu" v-if="storeCount.showEditMenu">
-          <span class="editBoard" @click="storeCount.openModal('Edit board', 'edit-board')">Edit board</span>
+          <span
+            class="editBoard"
+            @click="storeCount.openModal('Edit board', 'edit-board')"
+            >Edit board</span
+          >
           <span
             class="deleteBoard"
             @click="storeCount.openModal('Delete this board?', 'delete-board')"
@@ -51,12 +58,6 @@ import PrimaryBtn from "@/components/Buttons/PrimaryBtn.vue";
 
 const router = useRouter(); // get reference to our vue router
 const storeCount = useCounterStore(); // get reference to our store
-
-
-
-
-
-
 
 //Log out profile
 const logOut = () => {

@@ -21,12 +21,18 @@ export const useCounterStore = defineStore({
       boardField: false,
       editBoardField: false,
       columnField: false,
+      editColumnField: false,
     },
     sameColname: false,
     boardInfo: {
       boardName: "",
       selectedTabIndex: 0,
     },
+    newTaskInfo: {
+      taskName: "",
+      desc: "",
+    },
+    currentStatus: "",
   }),
   getters: {},
   actions: {
@@ -66,6 +72,9 @@ export const useCounterStore = defineStore({
       this.validationField.boardField = false;
       this.validationField.editBoardField = false;
       this.validationField.columnField = false;
+      this.validationField.editColumnField = false;
+      this.newTaskInfo.taskName = "";
+      this.newTaskInfo.desc = "";
     },
 
     addBoard(boardName) {
@@ -75,21 +84,30 @@ export const useCounterStore = defineStore({
         this.allData.push({
           boardName: boardName,
           editBoardName: boardName,
-          taskRow: {
-            Todo: [],
-            Doing: [],
-            Done: [],
-          },
+          taskRow: [
+            { colName: "Todo", allTaskData: [] },
+            { colName: "Doing", allTaskData: [] },
+            { colName: "Done", allTaskData: [] },
+          ],
         });
+        this.currentStatus =
+          this.allData[this.boardInfo.selectedTabIndex].taskRow[0].colName;
         this.resetData();
         this.closeModal();
       }
-      console.log(Object.keys(this.allData[this.boardInfo.selectedTabIndex].taskRow));
     },
 
     saveEditBoard() {
-      if (this.allData[this.boardInfo.selectedTabIndex].editBoardName === "") {
+      const isEmptyBoardField =
+        this.allData[this.boardInfo.selectedTabIndex].editBoardName === "";
+      const isEmptyColumnField = this.allData[
+        this.boardInfo.selectedTabIndex
+      ].taskRow.some((item) => item.colName === "");
+
+      if (isEmptyBoardField) {
         this.validationField.editBoardField = true;
+      } else if (isEmptyColumnField) {
+        this.validationField.editColumnField = true;
       } else {
         this.allData[this.boardInfo.selectedTabIndex].boardName =
           this.allData[this.boardInfo.selectedTabIndex].editBoardName;
@@ -111,24 +129,47 @@ export const useCounterStore = defineStore({
       this.closeModal();
     },
 
+    deleteColumn(index) {
+      this.allData[this.boardInfo.selectedTabIndex].taskRow.splice(index, 1);
+    },
+
     //Add new column
-    addColumn() {
-      let taskRow = this.allData[this.boardInfo.selectedTabIndex].taskRow;
-      var calNames = [];
-      for (let i in taskRow) {
-        calNames.push(i);
-      }
+    addNewColumn() {
+      let colNames = this.allData[this.boardInfo.selectedTabIndex].taskRow;
+
+      var arrCalNames = [];
+      colNames.forEach((item) => {
+        arrCalNames.push(item.colName);
+      });
+
       if (this.colName === "") {
         this.validationField.columnField = true;
         this.sameColname = false;
-      } else if (calNames.includes(this.colName)) {
+      } else if (arrCalNames.includes(this.colName)) {
         this.validationField.columnField = false;
         this.sameColname = true;
       } else {
-        this.allData[this.boardInfo.selectedTabIndex].taskRow[this.colName] =
-          [];
+        this.allData[this.boardInfo.selectedTabIndex].taskRow.push({
+          colName: this.colName,
+          allTaskData: [],
+        });
+        this.currentStatus =
+        this.allData[this.boardInfo.selectedTabIndex].taskRow[0].colName;
         this.closeModal();
       }
+    },
+
+    addNewTask() {
+      let selectedStatus = this.allData[
+        this.boardInfo.selectedTabIndex
+      ].taskRow.filter((item) => item.colName === this.currentStatus);
+
+      selectedStatus[0].allTaskData.push({
+        taskName: this.newTaskInfo.taskName,
+        description: this.newTaskInfo.desc,
+      });
+
+      this.closeModal();
     },
 
     //Select tab

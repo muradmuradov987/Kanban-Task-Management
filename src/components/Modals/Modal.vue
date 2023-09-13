@@ -31,7 +31,7 @@ const storeCount = useCounterStore(); // get reference to our store
 const closeBackdrop = (e) => {
   if (e.target == e.currentTarget) {
     storeCount.closeModal();
-    storeCount.resetData()
+    storeCount.resetData();
   }
 };
 </script>
@@ -52,9 +52,14 @@ const closeBackdrop = (e) => {
   .modal__container {
     max-width: 500px;
     width: 500px;
+    max-height: 750px;
+    overflow-y: auto;
     background: var(--bg2);
     z-index: 5;
     border-radius: 14px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     .modal__header {
       display: flex;
       justify-content: space-between;

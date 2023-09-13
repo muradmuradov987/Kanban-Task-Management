@@ -14,6 +14,7 @@
               class="form__input"
               type="text"
               placeholder="e.g.Take coffe break"
+              v-model="storeCount.newTaskInfo.taskName"
             />
           </div>
           <div class="form__control">
@@ -22,6 +23,7 @@
               class="form__textarea"
               type="text"
               placeholder="e.g. It's always good to break. This 15 minute break will recharge the batteries a little"
+              v-model="storeCount.newTaskInfo.desc"
             ></textarea>
           </div>
           <div class="form__control">
@@ -45,13 +47,18 @@
           >
           <div class="form__control">
             <label class="form__label">Current Status</label>
-            <select class="form__select">
-              <option value="">Todo</option>
-              <option value="">Doing</option>
-              <option value="">Done</option>
+            <select class="form__select" v-model="storeCount.currentStatus">
+              <option
+                v-for="itemName in storeCount.allData[
+                  storeCount.boardInfo.selectedTabIndex
+                ].taskRow"
+                :key="itemName.colName"
+              >
+                {{ itemName.colName }}
+              </option>
             </select>
           </div>
-          <PrimaryBtn buttonWidth="100%" class="mb-0"> Create Task</PrimaryBtn>
+          <PrimaryBtn buttonWidth="100%" class="mb-0" @click="storeCount.addNewTask()"> Create Task</PrimaryBtn>
         </div>
         <!--Add New Task end-->
 
@@ -76,15 +83,38 @@
           </div>
           <div>
             <div class="form__control">
-              <label class="form__label">Board Columns</label>
-              <div class="mb-3" v-for="(colList, key) in storeCount.allData[storeCount.boardInfo.selectedTabIndex].taskRow" :key="key">
+              <label
+                class="form__label"
+                v-if="
+                  storeCount.allData[storeCount.boardInfo.selectedTabIndex]
+                    .taskRow.length
+                "
+                >Board Columns</label
+              >
+              <div
+                class="mb-3"
+                v-for="(colList, index) in storeCount.allData[
+                  storeCount.boardInfo.selectedTabIndex
+                ].taskRow"
+                :key="index"
+              >
                 <div class="col__list">
-                  <h1>{{key}}</h1>
-                  <input class="form__input" type="text" v-model="storeCount.allData[storeCount.boardInfo.selectedTabIndex].taskRow[key]" />
-                  <i class="fa-solid fa-xmark"></i>
+                  <input
+                    class="form__input"
+                    type="text"
+                    v-model="colList.colName"
+                  />
+                  <i
+                    class="fa-solid fa-xmark"
+                    @click="storeCount.deleteColumn(index)"
+                  ></i>
                 </div>
-                <span class="input__info">Can't be empty</span>
               </div>
+              <span
+                class="input__info"
+                v-if="storeCount.validationField.editColumnField"
+                >Board columns can't be empty</span
+              >
             </div>
           </div>
           <PrimaryBtn
@@ -104,8 +134,15 @@
           class="delete-board"
         >
           <p class="deleteInfo">
-            Are you sure you want to delete the "Platform Launch" board? This
-            action will remove all columns and tasks and cannot be reversed.
+            Are you sure you want to delete the
+            <span class="deleteItem">
+              "{{
+                storeCount.allData[storeCount.boardInfo.selectedTabIndex]
+                  .boardName
+              }}"</span
+            >
+            board? This action will remove all columns and tasks and cannot be
+            reversed.
           </p>
           <div class="btnsGroup">
             <PrimaryBtn
@@ -160,7 +197,7 @@
         </div>
         <!--Create New Board end-->
 
-        <!--Create New Board Column-->
+        <!--Create New  Column-->
         <div
           v-if="storeCount.modal.name == 'create-board-column'"
           class="add-new-tab"
@@ -171,7 +208,7 @@
               class="form__input"
               type="text"
               v-model="storeCount.colName"
-              @keydown.enter="storeCount.addColumn()"
+              @keydown.enter="storeCount.addNewColumn()"
             />
             <span
               class="input__info"
@@ -186,11 +223,11 @@
             buttonWidth="100%"
             background="var(--primary)"
             color="var(--white)"
-            @click="storeCount.addColumn()"
+            @click="storeCount.addNewColumn()"
             ><i class="fa-solid fa-plus me-2"></i> Add New Column</PrimaryBtn
           >
         </div>
-        <!--Create New Board Column end-->
+        <!--Create New  Column end-->
       </template>
     </Modal>
 
@@ -233,13 +270,7 @@ const router = useRouter(); // get reference to our vue router
     position: relative;
     .content {
       width: 100%;
-      overflow: auto;
-      &::-webkit-scrollbar {
-        width: 10px;
-      }
-      &::-webkit-scrollbar-thumb {
-        background-color: var(--primary);
-      }
+      overflow-y: auto;
     }
   }
   .openSidebar {
@@ -411,7 +442,7 @@ const router = useRouter(); // get reference to our vue router
     .col__list {
       display: flex;
       align-items: center;
-      i{
+      i {
         margin-left: 20px;
         color: var(--white);
         font-size: 20px;
@@ -428,6 +459,9 @@ const router = useRouter(); // get reference to our vue router
 .delete-board {
   .deleteInfo {
     color: var(--grey);
+    .deleteItem {
+      color: var(--red);
+    }
   }
   .btnsGroup {
     display: flex;

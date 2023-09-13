@@ -12,25 +12,24 @@
         <div v-for="(tasks, index) in item.taskRow" :key="index">
           <div class="task__column">
             <p class="col__name">
-              <span class="col__status">{{ index }}</span> <span>({{ tasks.length }})</span>
+              <span class="col__status">{{ tasks.colName }}</span>
+              <span>({{ tasks.allTaskData.length }})</span>
             </p>
-            <div class="task__card">
-              <h3>Build UI for search</h3>
-              <p>0 of 1 subtask</p>
-            </div>
-            <div class="task__card">
-              <h3>Build UI for search</h3>
+            <div class="task__card" v-for="taskCard in tasks.allTaskData" :key="taskCard">
+              <h3>{{ taskCard.taskName }}</h3>
               <p>0 of 1 subtask</p>
             </div>
           </div>
         </div>
-        <div
-          class="create__new-col"
-          @click="
-            storeCount.openModal('Create Board Column', 'create-board-column')
-          "
-        >
-          <i class="fa-solid fa-plus"></i> <span> New Column</span>
+        <div class="task__column">
+          <div
+            class="create__new-col"
+            @click="
+              storeCount.openModal('Create Board Column', 'create-board-column')
+            "
+          >
+            <i class="fa-solid fa-plus"></i> <span> New Column</span>
+          </div>
         </div>
       </div>
     </section>
@@ -47,24 +46,29 @@ const storeCount = useCounterStore(); // get reference to our store
 <style lang="scss" scoped>
 .content__container {
   width: 100%;
-  height: calc(100vh - 110px);
-  padding: 20px;
+  height: calc(100vh - 90px);
   .tab__title {
     color: var(--primary);
   }
   .row__container {
     display: flex;
     gap: 20px;
+    padding: 20px;
     width: 100%;
-    padding-bottom: 50px;
+    height: 100%;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--primary);
+    }
     .task__column {
       width: 280px;
       display: flex;
       flex-direction: column;
       gap: 20px;
       white-space: wrap;
-
-      // background: red;
       .col__name {
         font-size: 12px;
         font-weight: 700;
