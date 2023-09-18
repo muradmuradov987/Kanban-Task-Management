@@ -32,20 +32,23 @@ export const useCounterStore = defineStore({
       taskName: "",
       desc: "",
     },
+    taskDescription: "",
+    taskCurrentStatus: "",
     currentStatus: "",
   }),
   getters: {},
   actions: {
-    openModal(title, name) {
+    openModal(title, name, desc ) {
       this.modal.show = true;
       this.modal.title = title;
       this.modal.name = name;
-      // this.modal.editBtn = edit;
+      this.taskDescription = desc;
     },
     closeModal() {
       this.modal.show = false;
       this.modal.title = "";
       this.modal.name = "";
+      this.taskDescription = "";
       this.resetData();
     },
 
@@ -154,7 +157,7 @@ export const useCounterStore = defineStore({
           allTaskData: [],
         });
         this.currentStatus =
-        this.allData[this.boardInfo.selectedTabIndex].taskRow[0].colName;
+          this.allData[this.boardInfo.selectedTabIndex].taskRow[0].colName;
         this.closeModal();
       }
     },
@@ -168,8 +171,9 @@ export const useCounterStore = defineStore({
         taskName: this.newTaskInfo.taskName,
         description: this.newTaskInfo.desc,
       });
-
-      this.closeModal();
+      this.currentStatus = this.allData[this.boardInfo.selectedTabIndex].taskRow[0]
+        .colName,
+        this.closeModal();
     },
 
     //Select tab

@@ -58,7 +58,13 @@
               </option>
             </select>
           </div>
-          <PrimaryBtn buttonWidth="100%" class="mb-0" @click="storeCount.addNewTask()"> Create Task</PrimaryBtn>
+          <PrimaryBtn
+            buttonWidth="100%"
+            class="mb-0"
+            @click="storeCount.addNewTask()"
+          >
+            Create Task</PrimaryBtn
+          >
         </div>
         <!--Add New Task end-->
 
@@ -228,6 +234,19 @@
           >
         </div>
         <!--Create New  Column end-->
+
+        <!--Open Task Info-->
+        <div v-if="storeCount.modal.name == 'open-task'" class="open-task">
+         
+          <p class="description">{{storeCount.taskDescription}}</p>
+          
+          <div class="taskStatusInfo">
+           <span>Current Status</span>
+           <span></span>
+          </div>
+        </div>
+
+        <!--Open Task Info end-->
       </template>
     </Modal>
 
@@ -467,6 +486,19 @@ const router = useRouter(); // get reference to our vue router
     display: flex;
     gap: 70px;
   }
+}
+
+.open-task {
+
+  .description{
+    color: var(--grey);
+  }
+  .taskStatusInfo{
+    span{
+
+    }
+  }
+ 
 }
 
 @media (max-width: 767px) {
