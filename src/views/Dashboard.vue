@@ -46,8 +46,8 @@
             ><i class="fa-solid fa-plus me-2"></i> Add New Subtask</PrimaryBtn
           >
           <div class="form__control">
-            <label class="form__label">Current Status</label>
-            <select class="form__select" v-model="storeCount.currentStatus">
+            <label class="form__label">Add Status</label>
+            <select class="form__select" v-model="storeCount.status">
               <option
                 v-for="itemName in storeCount.allData[
                   storeCount.boardInfo.selectedTabIndex
@@ -237,12 +237,31 @@
 
         <!--Open Task Info-->
         <div v-if="storeCount.modal.name == 'open-task'" class="open-task">
-         
-          <p class="description">{{storeCount.taskDescription}}</p>
-          
-          <div class="taskStatusInfo">
-           <span>Current Status</span>
-           <span></span>
+          <p class="description">{{ storeCount.taskDetail.description }}</p>
+            <h1>{{storeCount.taskDetail}}</h1>
+          <div class="form__control">
+            <label class="form__label">Change Status</label>
+
+            <div class="status__container">
+              <select class="form__select" v-model="storeCount.status">
+              <option
+                v-for="itemName in storeCount.allData[
+                  storeCount.boardInfo.selectedTabIndex
+                ].taskRow"
+                :key="itemName.colName"
+              >
+                {{ itemName.colName }}
+              </option>
+            </select>
+              <PrimaryBtn
+                buttonWidth="22%"
+                background="var(--green)"
+                color="var(--white)"
+                class="m-0"
+                @click="storeCount.changeStatus()"
+                ><i class="fa-solid fa-check me-2"></i>Apply</PrimaryBtn
+              >
+            </div>
           </div>
         </div>
 
@@ -268,6 +287,7 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { useCounterStore } from "@/stores/counter";
 import { useRouter } from "vue-router"; //import router
 import Navbar from "@/components/Navbar.vue";
@@ -489,16 +509,44 @@ const router = useRouter(); // get reference to our vue router
 }
 
 .open-task {
-
-  .description{
-    color: var(--grey);
+  .description {
+    color: var(--white);
   }
-  .taskStatusInfo{
-    span{
-
+  .form__control {
+    margin-bottom: 10px;
+    .form__label {
+      color: var(--white);
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .status__container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 50px;
+      .form__select {
+        width: 80%;
+        height: 40px;
+        padding: 0px 20px;
+        border-radius: 8px;
+        outline: none;
+        font-size: 16px;
+        color: var(--primary);
+        background: none;
+        border: 1px solid var(--border);
+        transition: 0.3s ease;
+        &:focus {
+          border: 1px solid var(--primary);
+        }
+        option {
+          font-size: 14px;
+          background: var(--bg);
+          color: var(--white);
+        }
+      }
     }
   }
- 
 }
 
 @media (max-width: 767px) {

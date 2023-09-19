@@ -32,17 +32,18 @@ export const useCounterStore = defineStore({
       taskName: "",
       desc: "",
     },
-    taskDescription: "",
-    taskCurrentStatus: "",
-    currentStatus: "",
+
+    taskDetail: null,
+
+    status: "",
   }),
   getters: {},
   actions: {
-    openModal(title, name, desc ) {
+    openModal(title, name, taskCard, index) {
       this.modal.show = true;
       this.modal.title = title;
       this.modal.name = name;
-      this.taskDescription = desc;
+      this.taskDetail = taskCard;
     },
     closeModal() {
       this.modal.show = false;
@@ -78,6 +79,8 @@ export const useCounterStore = defineStore({
       this.validationField.editColumnField = false;
       this.newTaskInfo.taskName = "";
       this.newTaskInfo.desc = "";
+      this.status = "";
+      this.taskDetail = null;
     },
 
     addBoard(boardName) {
@@ -93,8 +96,6 @@ export const useCounterStore = defineStore({
             { colName: "Done", allTaskData: [] },
           ],
         });
-        this.currentStatus =
-          this.allData[this.boardInfo.selectedTabIndex].taskRow[0].colName;
         this.resetData();
         this.closeModal();
       }
@@ -156,8 +157,6 @@ export const useCounterStore = defineStore({
           colName: this.colName,
           allTaskData: [],
         });
-        this.currentStatus =
-          this.allData[this.boardInfo.selectedTabIndex].taskRow[0].colName;
         this.closeModal();
       }
     },
@@ -165,20 +164,31 @@ export const useCounterStore = defineStore({
     addNewTask() {
       let selectedStatus = this.allData[
         this.boardInfo.selectedTabIndex
-      ].taskRow.filter((item) => item.colName === this.currentStatus);
-
+      ].taskRow.filter((item) => item.colName === this.status);
       selectedStatus[0].allTaskData.push({
+        id: Date.now() + Math.random(),
         taskName: this.newTaskInfo.taskName,
         description: this.newTaskInfo.desc,
       });
-      this.currentStatus = this.allData[this.boardInfo.selectedTabIndex].taskRow[0]
-        .colName,
-        this.closeModal();
+      this.status = "";
+      this.closeModal();
     },
 
     //Select tab
     selectTab(index) {
       this.boardInfo.selectedTabIndex = index;
+    },
+    changeStatus() {
+      let changeStatus = this.allData[
+        this.boardInfo.selectedTabIndex
+      ].taskRow.filter((item) => item.colName === this.status);
+
+      changeStatus[0].allTaskData.push(this.taskDetail);
+
+      let oldStatus = this.allData[this.boardInfo.selectedTabIndex].taskRow;
+
+
+      // this.closeModal()
     },
   },
 });

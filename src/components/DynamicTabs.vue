@@ -15,8 +15,8 @@
               <span class="col__status">{{ tasks.colName }}</span>
               <span>({{ tasks.allTaskData.length }})</span>
             </p>
-            <div class="task__card" v-for="(taskCard, index) in tasks.allTaskData" :key="index" @click="
-              storeCount.openModal(taskCard.taskName, 'open-task', taskCard.description )
+            <div class="task__card" v-for="(taskCard ) in tasks.allTaskData" :key="taskCard" @click="
+              storeCount.openModal(taskCard.taskName, 'open-task', taskCard)
             ">
               <h3>{{ taskCard.taskName }}</h3>
               <p>0 of 1 subtask</p>

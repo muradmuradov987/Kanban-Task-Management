@@ -8,7 +8,7 @@
       </div>
       <div class="form__wrapper">
         <div class="form__control" :class="{ err__input: validation.email }">
-          <input class="form__input" type="mail" v-model="email" required />
+          <input class="form__input" type="mail" v-model="email" required @keypress.enter="login" />
           <label class="form__label">Email</label>
         </div>
         <div class="form__control" :class="{ err__input: validation.password }">
