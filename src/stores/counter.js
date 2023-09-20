@@ -36,14 +36,16 @@ export const useCounterStore = defineStore({
     taskDetail: null,
 
     status: "",
+    tasksColName: "",
   }),
   getters: {},
   actions: {
-    openModal(title, name, taskCard, index) {
+    openModal(title, name, taskCard, tasksColName) {
       this.modal.show = true;
       this.modal.title = title;
       this.modal.name = name;
       this.taskDetail = taskCard;
+      this.tasksColName = tasksColName;
     },
     closeModal() {
       this.modal.show = false;
@@ -80,6 +82,7 @@ export const useCounterStore = defineStore({
       this.newTaskInfo.taskName = "";
       this.newTaskInfo.desc = "";
       this.status = "";
+      this.tasksColName = "";
       this.taskDetail = null;
     },
 
@@ -179,16 +182,54 @@ export const useCounterStore = defineStore({
       this.boardInfo.selectedTabIndex = index;
     },
     changeStatus() {
-      let changeStatus = this.allData[
-        this.boardInfo.selectedTabIndex
-      ].taskRow.filter((item) => item.colName === this.status);
+      //Select taskCol
+      let colTasks = this.allData[this.boardInfo.selectedTabIndex].taskRow;
+      let selectedTaskCol;
+      colTasks.map((item) => {
+        if (item.colName === this.tasksColName) {
+          selectedTaskCol = item.allTaskData;
+        }
+      });
 
-      changeStatus[0].allTaskData.push(this.taskDetail);
+      //Delete task
+      let currentTaskList = selectedTaskCol.filter(
+        (item) => item.id != this.taskDetail.id
+      );
 
-      let oldStatus = this.allData[this.boardInfo.selectedTabIndex].taskRow;
+      if (this.status === "") {
+        console.log("status nor selected");
+      } else if (this.status === this.tasksColName) {
+        console.log("same column");
+        return
+      } else {
+        colTasks.map((item) => {
+          if (item.colName === this.tasksColName) {
+            item.allTaskData = currentTaskList;
+          }
+        });
+      }
+
+      /// CLOSE BUTTON INSIDE INPUT
 
 
-      // this.closeModal()
+
+
+      // Move task to selected Col
+      let moveTaskList = selectedTaskCol.filter(
+        (item) => item.id === this.taskDetail.id
+      );
+
+      if (this.status === "") {
+        return;
+      } else {
+        colTasks.forEach((item) => {
+          if (item.colName === this.status) {
+            item.allTaskData = [...moveTaskList];
+          }
+        });
+      }
+
+      this.closeModal();
     },
   },
 });
