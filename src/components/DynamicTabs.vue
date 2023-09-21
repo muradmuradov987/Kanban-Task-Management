@@ -19,7 +19,7 @@
               storeCount.openModal(taskCard.taskName, 'open-task', taskCard, tasks.colName)
             ">
               <h3>{{ taskCard.taskName }}</h3>
-              <p>0 of 1 subtask</p>
+              <p>1 of {{taskCard.tempSubTasks.length}} subtask</p>
             </div>
           </div>
         </div>
@@ -51,6 +51,7 @@ const storeCount = useCounterStore(); // get reference to our store
   height: calc(100vh - 90px);
   .tab__title {
     color: var(--primary);
+    padding: 5px 20px;
   }
   .row__container {
     display: flex;

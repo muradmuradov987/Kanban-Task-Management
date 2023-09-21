@@ -1,10 +1,23 @@
-:root {
-    --bg: #21212C;
-    --bg2: #2C2C37;
-    --white: #ffffff;
-    --primary: #6660C3;
-    --border: #414552;
-    --grey: #828FA2;
-    --red: red;
-    --green: rgb(38, 177, 0);
-  }
+:root, 
+
+.dark {
+  --bg: #21212c;
+  --bg2: #2c2c37;
+  --white: #ffffff;
+  --primary: #6660c3;
+  --border: #414552;
+  --grey: #828fa2;
+  --red: red;
+  --green: rgb(38, 177, 0);
+}
+
+.light {
+  --bg: #F4F7FD;
+  --bg2: #FFFFFF;
+  --white: black;
+  --primary: #6660c3;
+  --border: #414552;
+  --grey: #828fa2;
+  --red: red;
+  --green: rgb(38, 177, 0);
+}

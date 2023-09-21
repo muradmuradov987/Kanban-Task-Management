@@ -1,12 +1,16 @@
 <template>
   <aside v-if="storeCount.showAside">
     <div class="board__link-container">
-      <h6 class="board__number">ALL BOARDS ({{storeCount.allData.length}})</h6>
+      <h6 class="board__number">
+        ALL BOARDS ({{ storeCount.allData.length }})
+      </h6>
       <div
         class="board__link"
         v-for="(tab, index) in storeCount.allData"
         :key="index"
-        :class="{ active__link: storeCount.boardInfo.selectedTabIndex === index }"
+        :class="{
+          active__link: storeCount.boardInfo.selectedTabIndex === index,
+        }"
         @click="storeCount.selectTab(index)"
       >
         <i class="fa-solid fa-bolt"></i><span>{{ tab.boardName }}</span>
@@ -25,7 +29,11 @@
     <div class="aside__footer">
       <div class="theme__toggle">
         <i class="fa-solid fa-sun"></i>
-        <input type="checkbox" checked class="themeBtn" />
+        <input
+          type="checkbox"
+          v-model="storeCount.isThemeChecked"
+          class="themeBtn"
+        />
         <i class="fa-solid fa-moon"></i>
       </div>
       <div class="hide__sidebar" @click="storeCount.hideSidebar">
@@ -36,11 +44,12 @@
 </template>
 
 <script setup>
-import { ref, } from "vue";
+import { ref } from "vue";
 import { useCounterStore } from "@/stores/counter";
 import PrimaryBtn from "@/components/Buttons/PrimaryBtn.vue";
 
 const storeCount = useCounterStore(); // get reference to our store
+
 
 </script>
 
@@ -54,7 +63,7 @@ aside {
   display: flex;
   flex-direction: column;
   gap: 20px;
-   z-index: 10;
+  z-index: 10;
   .board__link-container {
     padding: 20px;
     padding-left: 0;
@@ -88,7 +97,7 @@ aside {
       i {
         margin-right: 10px;
       }
-      span{
+      span {
         overflow: hidden;
       }
       &:hover {
@@ -147,6 +156,7 @@ aside {
         }
       }
     }
+
     .hide__sidebar {
       margin: 20px;
       text-align: center;

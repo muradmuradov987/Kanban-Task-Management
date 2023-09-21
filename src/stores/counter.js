@@ -1,9 +1,9 @@
-import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 
 export const useCounterStore = defineStore({
   id: "counter",
   state: () => ({
+    isThemeChecked: true,
     modal: {
       show: false,
       title: "",
@@ -22,6 +22,8 @@ export const useCounterStore = defineStore({
       editBoardField: false,
       columnField: false,
       editColumnField: false,
+      taskName: false,
+      addStatus: false,
     },
     sameColname: false,
     boardInfo: {
@@ -32,11 +34,17 @@ export const useCounterStore = defineStore({
       taskName: "",
       desc: "",
     },
+    test: null,
 
     taskDetail: null,
 
     status: "",
     tasksColName: "",
+
+    tempSubTasks: [
+      { isTaskChecked: false, subTaskValue: "" },
+      { isTaskChecked: false, subTaskValue: "" },
+    ],
   }),
   getters: {},
   actions: {
@@ -79,11 +87,18 @@ export const useCounterStore = defineStore({
       this.validationField.editBoardField = false;
       this.validationField.columnField = false;
       this.validationField.editColumnField = false;
+      this.validationField.taskName = false;
+      this.validationField.addStatus = false;
       this.newTaskInfo.taskName = "";
       this.newTaskInfo.desc = "";
       this.status = "";
       this.tasksColName = "";
       this.taskDetail = null;
+      this.tempSubTasks = [];
+      this.tempSubTasks.push(
+        { isTaskChecked: false, subTaskValue: "" },
+        { isTaskChecked: false, subTaskValue: "" }
+      );
     },
 
     addBoard(boardName) {
@@ -165,18 +180,48 @@ export const useCounterStore = defineStore({
     },
 
     addNewTask() {
-      let selectedStatus = this.allData[
-        this.boardInfo.selectedTabIndex
-      ].taskRow.filter((item) => item.colName === this.status);
-      selectedStatus[0].allTaskData.push({
-        id: Date.now() + Math.random(),
-        taskName: this.newTaskInfo.taskName,
-        description: this.newTaskInfo.desc,
-      });
-      this.status = "";
-      this.closeModal();
+      if (this.newTaskInfo.taskName === "") {
+        this.validationField.taskName = true;
+      } else if (this.status === "") {
+        this.validationField.addStatus = true;
+        this.validationField.taskName = false;
+      } else {
+        let selectedStatus = this.allData[
+          this.boardInfo.selectedTabIndex
+        ].taskRow.filter((item) => item.colName === this.status);
+        selectedStatus[0].allTaskData.push({
+          id: Date.now() + Math.random(),
+          taskName: this.newTaskInfo.taskName,
+          description: this.newTaskInfo.desc,
+          tempSubTasks: this.tempSubTasks,
+        });
+
+        this.tempSubTasks = [];
+        this.tempSubTasks.push(
+          { isTaskChecked: false, subTaskValue: "" },
+          { isTaskChecked: false, subTaskValue: "" }
+        );
+        this.status = "";
+        this.closeModal();
+      }
     },
 
+    addNewSubTask() {
+      this.tempSubTasks.push({
+        isTaskChecked: false,
+        subTaskValue: "",
+      });
+    },
+
+    listCheckedTasks() {
+      this.test = this.taskDetail.tempSubTasks.filter(
+        (item) => item.isTaskChecked == false
+      );
+    },
+
+    deleteSubTask(index) {
+      this.tempSubTasks.splice(index, 1);
+    },
     //Select tab
     selectTab(index) {
       this.boardInfo.selectedTabIndex = index;
@@ -200,7 +245,7 @@ export const useCounterStore = defineStore({
         console.log("status nor selected");
       } else if (this.status === this.tasksColName) {
         console.log("same column");
-        return
+        return;
       } else {
         colTasks.map((item) => {
           if (item.colName === this.tasksColName) {
@@ -210,9 +255,6 @@ export const useCounterStore = defineStore({
       }
 
       /// CLOSE BUTTON INSIDE INPUT
-
-
-
 
       // Move task to selected Col
       let moveTaskList = selectedTaskCol.filter(

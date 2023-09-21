@@ -1,5 +1,8 @@
 <template>
-  <div class="dasboard__container">
+  <div
+    class="dasboard__container"
+    :class="{ light: !storeCount.isThemeChecked }"
+  >
     <!--All MODALS-->
     <Modal>
       <template #default>
@@ -16,6 +19,9 @@
               placeholder="e.g.Take coffe break"
               v-model="storeCount.newTaskInfo.taskName"
             />
+            <span class="input__info" v-if="storeCount.validationField.taskName"
+              >Can't be empty</span
+            >
           </div>
           <div class="form__control">
             <label class="form__label">Description</label>
@@ -26,23 +32,30 @@
               v-model="storeCount.newTaskInfo.desc"
             ></textarea>
           </div>
-          <div class="form__control">
+          <div class="form__control" v-if="storeCount.tempSubTasks.length > 0">
             <label class="form__label">Subtasks</label>
-            <div class="subtask">
-              <input class="form__input" type="text" />
-              <i class="fa-solid fa-xmark"></i>
-            </div>
-          </div>
-          <div class="form__control">
-            <div class="subtask">
-              <input class="form__input" type="text" />
-              <i class="fa-solid fa-xmark"></i>
+            <div
+              class="subtask"
+              v-for="(item, index) in storeCount.tempSubTasks"
+              :key="index"
+            >
+              <input
+                class="form__input"
+                type="text"
+                v-model="item.subTaskValue"
+              />
+              <i
+                class="fa-solid fa-xmark"
+                @click="storeCount.deleteSubTask(index)"
+              ></i>
             </div>
           </div>
           <PrimaryBtn
             buttonWidth="100%"
             background="var(--white)"
             color="var(--primary)"
+            @click="storeCount.addNewSubTask"
+            v-if="storeCount.tempSubTasks.length > 0"
             ><i class="fa-solid fa-plus me-2"></i> Add New Subtask</PrimaryBtn
           >
           <div class="form__control">
@@ -57,6 +70,11 @@
                 {{ itemName.colName }}
               </option>
             </select>
+            <span
+              class="input__info"
+              v-if="storeCount.validationField.addStatus"
+              >Can't be empty</span
+            >
           </div>
           <PrimaryBtn
             buttonWidth="100%"
@@ -73,7 +91,7 @@
           <div class="form__control">
             <label class="form__label">Board Name</label>
             <input
-              class="form__input"
+              class="form__input mb-5"
               type="text"
               @keydown.enter="storeCount.saveEditBoard()"
               v-model="
@@ -237,22 +255,49 @@
 
         <!--Open Task Info-->
         <div v-if="storeCount.modal.name == 'open-task'" class="open-task">
-          <p class="description">{{ storeCount.taskDetail.description }}</p>
-            <h1>{{storeCount.taskDetail}}</h1>
+          <div
+            class="description__container"
+            v-if="storeCount.taskDetail.description.length > 0"
+          >
+            <p class="desc__title">Description</p>
+            <p class="description">{{ storeCount.taskDetail.description }}</p>
+          </div>
+          <div
+            class="subTaskContainer"
+            v-if="storeCount.taskDetail.tempSubTasks.length > 0"
+          >
+            <p class="subTaskLength">
+              Subtasks (1 of {{ storeCount.taskDetail.tempSubTasks.length }})
+            </p>
+            <div
+              class="subTask"
+              :class="{ done: item.isTaskChecked }"
+              v-for="item in storeCount.taskDetail.tempSubTasks"
+              :key="item"
+            >
+              <input
+                type="checkbox"
+                class="form-check-input"
+                v-model="item.isTaskChecked"
+                @click="storeCount.listCheckedTasks"
+              />
+              <span class="task__desc">{{ item.subTaskValue }}</span>
+            </div>
+          </div>
+
           <div class="form__control">
             <label class="form__label">Change Status</label>
-
             <div class="status__container">
               <select class="form__select" v-model="storeCount.status">
-              <option
-                v-for="itemName in storeCount.allData[
-                  storeCount.boardInfo.selectedTabIndex
-                ].taskRow"
-                :key="itemName.colName"
-              >
-                {{ itemName.colName }}
-              </option>
-            </select>
+                <option
+                  v-for="itemName in storeCount.allData[
+                    storeCount.boardInfo.selectedTabIndex
+                  ].taskRow"
+                  :key="itemName.colName"
+                >
+                  {{ itemName.colName }}
+                </option>
+              </select>
               <PrimaryBtn
                 buttonWidth="22%"
                 background="var(--green)"
@@ -304,6 +349,7 @@ const router = useRouter(); // get reference to our vue router
   min-height: 100vh;
   background: var(--bg);
   position: relative;
+  transition: 0.7s ease;
   main {
     display: flex;
     position: relative;
@@ -364,6 +410,11 @@ const router = useRouter(); // get reference to our vue router
       &:focus {
         border: 1px solid var(--primary);
       }
+    }
+    .input__info {
+      color: var(--red);
+      font-size: 14px;
+      padding: 10px;
     }
     .form__textarea {
       width: 100%;
@@ -509,8 +560,60 @@ const router = useRouter(); // get reference to our vue router
 }
 
 .open-task {
-  .description {
-    color: var(--white);
+  .description__container {
+    margin-bottom: 30px;
+    .desc__title {
+      color: var(--grey);
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .description {
+      color: var(--white);
+      font-size: 14px;
+    }
+  }
+  .subTaskContainer {
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    .subTaskLength {
+      color: var(--grey);
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .subTask {
+      display: flex;
+      align-items: center;
+      background: var(--bg);
+      padding: 10px 20px;
+      border-radius: 8px;
+      input {
+        margin: 0;
+      }
+      .task__desc {
+        margin-left: 15px;
+        color: var(--white);
+        font-weight: 700;
+        font-size: 14px;
+      }
+    }
+    .done {
+      .task__desc {
+        color: var(--grey);
+        position: relative;
+        &::before{
+          content: '';
+          width: 100%;
+          height: 2px;
+          background: var(--grey);
+          position: absolute;
+          top: 60%;
+          left: 0;
+          transform: translate(-0%,-50%);
+        }
+      }
+    }
   }
   .form__control {
     margin-bottom: 10px;
