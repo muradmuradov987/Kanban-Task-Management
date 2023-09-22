@@ -49,6 +49,9 @@
                 @click="storeCount.deleteSubTask(index)"
               ></i>
             </div>
+            <span class="input__info" v-if="storeCount.validationField.subTask"
+              >Can't be empty</span
+            >
           </div>
           <PrimaryBtn
             buttonWidth="100%"
@@ -465,6 +468,9 @@ const router = useRouter(); // get reference to our vue router
         cursor: pointer;
         color: var(--primary);
       }
+      // .errorBorder{
+      //   border: 1px solid var(--red) !important;
+      // }
     }
   }
 }
@@ -602,15 +608,15 @@ const router = useRouter(); // get reference to our vue router
       .task__desc {
         color: var(--grey);
         position: relative;
-        &::before{
-          content: '';
+        &::before {
+          content: "";
           width: 100%;
           height: 2px;
           background: var(--grey);
           position: absolute;
           top: 60%;
           left: 0;
-          transform: translate(-0%,-50%);
+          transform: translate(-0%, -50%);
         }
       }
     }

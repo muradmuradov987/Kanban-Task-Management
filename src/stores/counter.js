@@ -24,6 +24,7 @@ export const useCounterStore = defineStore({
       editColumnField: false,
       taskName: false,
       addStatus: false,
+      subTask: false,
     },
     sameColname: false,
     boardInfo: {
@@ -89,6 +90,7 @@ export const useCounterStore = defineStore({
       this.validationField.editColumnField = false;
       this.validationField.taskName = false;
       this.validationField.addStatus = false;
+      this.validationField.subTask = false;
       this.newTaskInfo.taskName = "";
       this.newTaskInfo.desc = "";
       this.status = "";
@@ -180,30 +182,42 @@ export const useCounterStore = defineStore({
     },
 
     addNewTask() {
+      let checkSubTaskValue = this.tempSubTasks.some(
+        (item) => item.subTaskValue === ""
+      );
+
       if (this.newTaskInfo.taskName === "") {
         this.validationField.taskName = true;
-      } else if (this.status === "") {
-        this.validationField.addStatus = true;
-        this.validationField.taskName = false;
-      } else {
-        let selectedStatus = this.allData[
-          this.boardInfo.selectedTabIndex
-        ].taskRow.filter((item) => item.colName === this.status);
-        selectedStatus[0].allTaskData.push({
-          id: Date.now() + Math.random(),
-          taskName: this.newTaskInfo.taskName,
-          description: this.newTaskInfo.desc,
-          tempSubTasks: this.tempSubTasks,
-        });
-
-        this.tempSubTasks = [];
-        this.tempSubTasks.push(
-          { isTaskChecked: false, subTaskValue: "" },
-          { isTaskChecked: false, subTaskValue: "" }
-        );
-        this.status = "";
-        this.closeModal();
+        return;
       }
+
+      if (checkSubTaskValue) {
+        this.validationField.subTask = true;
+        return;
+      }
+
+      if (this.status === "") {
+        this.validationField.addStatus = true;
+        return;
+      }
+
+      let selectedStatus = this.allData[
+        this.boardInfo.selectedTabIndex
+      ].taskRow.filter((item) => item.colName === this.status);
+      selectedStatus[0].allTaskData.push({
+        id: Date.now() + Math.random(),
+        taskName: this.newTaskInfo.taskName,
+        description: this.newTaskInfo.desc,
+        tempSubTasks: this.tempSubTasks,
+      });
+
+      this.tempSubTasks = [];
+      this.tempSubTasks.push(
+        { isTaskChecked: false, subTaskValue: "" },
+        { isTaskChecked: false, subTaskValue: "" }
+      );
+      this.status = "";
+      this.closeModal();
     },
 
     addNewSubTask() {
@@ -213,11 +227,11 @@ export const useCounterStore = defineStore({
       });
     },
 
-    listCheckedTasks() {
-      this.test = this.taskDetail.tempSubTasks.filter(
-        (item) => item.isTaskChecked == false
-      );
-    },
+    // listCheckedTasks() {
+    //   this.test = this.taskDetail.tempSubTasks.filter(
+    //     (item) => item.isTaskChecked == false
+    //   );
+    // },
 
     deleteSubTask(index) {
       this.tempSubTasks.splice(index, 1);
