@@ -270,7 +270,7 @@
             v-if="storeCount.taskDetail.tempSubTasks.length > 0"
           >
             <p class="subTaskLength">
-              Subtasks (1 of {{ storeCount.taskDetail.tempSubTasks.length }})
+              Subtasks ({{storeCount.taskDetail.doneSubtask.length}} of {{ storeCount.taskDetail.tempSubTasks.length }})
             </p>
             <div
               class="subTask"
@@ -310,6 +310,8 @@
                 ><i class="fa-solid fa-check me-2"></i>Apply</PrimaryBtn
               >
             </div>
+            <span class="input__info" v-if="storeCount.validationField.emptyStatus">Can't be empty</span>
+            <span class="input__info" v-if="storeCount.validationField.selectStatus">The same status cannot be selected</span>
           </div>
         </div>
 
@@ -654,6 +656,11 @@ const router = useRouter(); // get reference to our vue router
           color: var(--white);
         }
       }
+    }
+    .input__info {
+      color: var(--red);
+      font-size: 14px;
+      padding: 10px;
     }
   }
 }

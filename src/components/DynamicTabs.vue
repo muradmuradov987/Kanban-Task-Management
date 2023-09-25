@@ -19,7 +19,7 @@
               storeCount.openModal(taskCard.taskName, 'open-task', taskCard, tasks.colName)
             ">
               <h3>{{ taskCard.taskName }}</h3>
-              <p>1 of {{taskCard.tempSubTasks.length}} subtask</p>
+              <p>{{taskCard.doneSubtask.length}} of {{taskCard.tempSubTasks.length}} subtask</p>
             </div>
           </div>
         </div>

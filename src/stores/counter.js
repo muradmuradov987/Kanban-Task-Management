@@ -25,6 +25,8 @@ export const useCounterStore = defineStore({
       taskName: false,
       addStatus: false,
       subTask: false,
+      emptyStatus: false,
+      selectStatus: false,
     },
     sameColname: false,
     boardInfo: {
@@ -35,7 +37,7 @@ export const useCounterStore = defineStore({
       taskName: "",
       desc: "",
     },
-    test: null,
+    tempSubTasksLength: 0,
 
     taskDetail: null,
 
@@ -47,7 +49,11 @@ export const useCounterStore = defineStore({
       { isTaskChecked: false, subTaskValue: "" },
     ],
   }),
-  getters: {},
+  getters: {
+    // countTrueValues() {
+    //  this.tempSubTasksLength =  this.taskDetail.tempSubTasks.filter((task) => task.isTaskChecked).length;
+    // },
+  },
   actions: {
     openModal(title, name, taskCard, tasksColName) {
       this.modal.show = true;
@@ -91,7 +97,9 @@ export const useCounterStore = defineStore({
       this.validationField.taskName = false;
       this.validationField.addStatus = false;
       this.validationField.subTask = false;
-      this.newTaskInfo.taskName = "";
+      (this.validationField.emptyStatus = false),
+        (this.validationField.selectStatus = false),
+        (this.newTaskInfo.taskName = "");
       this.newTaskInfo.desc = "";
       this.status = "";
       this.tasksColName = "";
@@ -209,6 +217,7 @@ export const useCounterStore = defineStore({
         taskName: this.newTaskInfo.taskName,
         description: this.newTaskInfo.desc,
         tempSubTasks: this.tempSubTasks,
+        doneSubtask: [],
       });
 
       this.tempSubTasks = [];
@@ -227,11 +236,23 @@ export const useCounterStore = defineStore({
       });
     },
 
-    // listCheckedTasks() {
-    //   this.test = this.taskDetail.tempSubTasks.filter(
-    //     (item) => item.isTaskChecked == false
-    //   );
-    // },
+    async listCheckedTasks() {
+      let selectedStatus = this.allData[
+        this.boardInfo.selectedTabIndex
+      ].taskRow.filter((item) => item.colName === this.tasksColName);
+
+      let selectedTaskDetail = selectedStatus[0].allTaskData.filter(
+        (item) => item.id === this.taskDetail.id
+      );
+
+      setTimeout(() => {
+        let doneSubtask = selectedTaskDetail[0].tempSubTasks.filter(
+          (item) => item.isTaskChecked === true
+        );
+        selectedTaskDetail[0].doneSubtask = []
+        selectedTaskDetail[0].doneSubtask = [... doneSubtask];
+      }, 300);
+    },
 
     deleteSubTask(index) {
       this.tempSubTasks.splice(index, 1);
@@ -240,6 +261,7 @@ export const useCounterStore = defineStore({
     selectTab(index) {
       this.boardInfo.selectedTabIndex = index;
     },
+    
     changeStatus() {
       //Select taskCol
       let colTasks = this.allData[this.boardInfo.selectedTabIndex].taskRow;
@@ -256,9 +278,12 @@ export const useCounterStore = defineStore({
       );
 
       if (this.status === "") {
-        console.log("status nor selected");
+        this.validationField.selectStatus = false;
+        this.validationField.emptyStatus = true;
       } else if (this.status === this.tasksColName) {
-        console.log("same column");
+        this.validationField.selectStatus = true;
+        this.validationField.emptyStatus = false;
+
         return;
       } else {
         colTasks.map((item) => {
