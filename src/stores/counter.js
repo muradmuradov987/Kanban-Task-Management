@@ -249,8 +249,8 @@ export const useCounterStore = defineStore({
         let doneSubtask = selectedTaskDetail[0].tempSubTasks.filter(
           (item) => item.isTaskChecked === true
         );
-        selectedTaskDetail[0].doneSubtask = []
-        selectedTaskDetail[0].doneSubtask = [... doneSubtask];
+        selectedTaskDetail[0].doneSubtask = [];
+        selectedTaskDetail[0].doneSubtask = [...doneSubtask];
       }, 300);
     },
 
@@ -261,56 +261,34 @@ export const useCounterStore = defineStore({
     selectTab(index) {
       this.boardInfo.selectedTabIndex = index;
     },
-    
+
     changeStatus() {
-      //Select taskCol
-      let colTasks = this.allData[this.boardInfo.selectedTabIndex].taskRow;
-      let selectedTaskCol;
-      colTasks.map((item) => {
-        if (item.colName === this.tasksColName) {
-          selectedTaskCol = item.allTaskData;
-        }
-      });
-
-      //Delete task
-      let currentTaskList = selectedTaskCol.filter(
-        (item) => item.id != this.taskDetail.id
-      );
-
       if (this.status === "") {
         this.validationField.selectStatus = false;
         this.validationField.emptyStatus = true;
       } else if (this.status === this.tasksColName) {
         this.validationField.selectStatus = true;
         this.validationField.emptyStatus = false;
-
         return;
       } else {
-        colTasks.map((item) => {
-          if (item.colName === this.tasksColName) {
-            item.allTaskData = currentTaskList;
+        //Delete task from where it is
+        this.allData[this.boardInfo.selectedTabIndex].taskRow.forEach(
+          (item) => {
+            if (item.colName === this.tasksColName) {
+              item.allTaskData = item.allTaskData.filter(
+                (a) => a.id !== this.taskDetail.id
+              );
+            }
           }
-        });
-      }
-
-      /// CLOSE BUTTON INSIDE INPUT
-
-      // Move task to selected Col
-      let moveTaskList = selectedTaskCol.filter(
-        (item) => item.id === this.taskDetail.id
-      );
-
-      if (this.status === "") {
-        return;
-      } else {
-        colTasks.forEach((item) => {
+        );
+        // Choose the place to be transferred
+        this.allData[this.boardInfo.selectedTabIndex].taskRow.filter((item) => {
           if (item.colName === this.status) {
-            item.allTaskData = [...moveTaskList];
+            item.allTaskData.push(this.taskDetail);
           }
         });
+        this.closeModal();
       }
-
-      this.closeModal();
     },
   },
 });

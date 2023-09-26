@@ -87,7 +87,7 @@ const closeBackdrop = (e) => {
   .modal__backdrop {
     padding: 50px 20px;
     .modal__container {
-      width: auto;
+      width: 100%;
       border-radius: 7px;
       .modal__header {
         padding: 15px;

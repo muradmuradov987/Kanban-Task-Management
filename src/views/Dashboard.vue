@@ -603,7 +603,15 @@ const router = useRouter(); // get reference to our vue router
         margin-left: 15px;
         color: var(--white);
         font-weight: 700;
-        font-size: 14px;
+        font-size: 16px;
+      }
+      .form-check-input{
+        border-radius: 0;
+        box-shadow: none;
+        &:checked{
+          background-color: var(--primary);
+          border-color: var(--primary)
+        }
       }
     }
     .done {
@@ -613,7 +621,7 @@ const router = useRouter(); // get reference to our vue router
         &::before {
           content: "";
           width: 100%;
-          height: 2px;
+          height: 1.5px;
           background: var(--grey);
           position: absolute;
           top: 60%;
