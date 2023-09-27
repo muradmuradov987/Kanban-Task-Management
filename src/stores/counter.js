@@ -7,13 +7,13 @@ export const useCounterStore = defineStore({
     modal: {
       show: false,
       title: "",
-      editBtn: false,
       name: "",
     },
     isLoggedIn: false,
     showAside: true,
     showProfileMenu: false,
     showEditMenu: false,
+    showEditTaskMenu: false,
 
     allData: [],
     colName: "",
@@ -61,6 +61,9 @@ export const useCounterStore = defineStore({
       this.modal.name = name;
       this.taskDetail = taskCard;
       this.tasksColName = tasksColName;
+      this.showEditMenu = false;
+      this.showProfileMenu = false;
+      this.showEditTaskMenu = false;
     },
     closeModal() {
       this.modal.show = false;
@@ -86,10 +89,19 @@ export const useCounterStore = defineStore({
       this.showEditMenu = !this.showEditMenu;
     },
 
+    toggleEditTaskMenu() {
+      this.showProfileMenu = false;
+      this.showEditMenu = false;
+      this.showEditTaskMenu = !this.showEditTaskMenu;
+    },
+
     resetData() {
       this.colName = "";
       this.boardInfo.boardName = "";
       this.sameColname = false;
+      this.showEditMenu = false;
+      this.showProfileMenu = false;
+      this.showEditTaskMenu = false;
       this.validationField.boardField = false;
       this.validationField.editBoardField = false;
       this.validationField.columnField = false;
@@ -234,9 +246,13 @@ export const useCounterStore = defineStore({
         isTaskChecked: false,
         subTaskValue: "",
       });
+      this.taskDetail?.tempSubTasks.push({
+        isTaskChecked: false,
+        subTaskValue: "",
+      });
     },
 
-    async listCheckedTasks() {
+    listCheckedTasks() {
       let selectedStatus = this.allData[
         this.boardInfo.selectedTabIndex
       ].taskRow.filter((item) => item.colName === this.tasksColName);
@@ -251,11 +267,15 @@ export const useCounterStore = defineStore({
         );
         selectedTaskDetail[0].doneSubtask = [];
         selectedTaskDetail[0].doneSubtask = [...doneSubtask];
-      }, 300);
+      }, 30);
     },
 
     deleteSubTask(index) {
       this.tempSubTasks.splice(index, 1);
+      this.taskDetail?.tempSubTasks.splice(index, 1);
+      if (this.taskDetail) {
+        this.listCheckedTasks();
+      }
     },
     //Select tab
     selectTab(index) {
@@ -289,6 +309,48 @@ export const useCounterStore = defineStore({
         });
         this.closeModal();
       }
+    },
+
+    deleteTask() {
+      let selectedStatus = this.allData[
+        this.boardInfo.selectedTabIndex
+      ].taskRow.filter((item) => item.colName === this.tasksColName);
+      selectedStatus[0].allTaskData = selectedStatus[0].allTaskData.filter(
+        (item) => item.id !== this.taskDetail.id
+      );
+      this.closeModal();
+    },
+
+    editTask() {
+      let checkSubTaskValue = this.taskDetail.tempSubTasks.some(
+        (item) => item.subTaskValue === ""
+      );
+
+      if (this.taskDetail.taskName === "") {
+        this.validationField.taskName = true;
+        return;
+      }
+
+      if (checkSubTaskValue) {
+        this.validationField.subTask = true;
+        return;
+      }
+
+      this.tempSubTasks = [];
+      this.tempSubTasks.push(
+        { isTaskChecked: false, subTaskValue: "" },
+        { isTaskChecked: false, subTaskValue: "" }
+      );
+      this.closeModal();
+    },
+
+    cancelAction() {
+      this.openModal(
+        this.taskDetail.taskName,
+        "open-task",
+        this.taskDetail,
+        this.tasksColName
+      );
     },
   },
 });

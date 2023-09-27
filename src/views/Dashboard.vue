@@ -262,7 +262,11 @@
             class="description__container"
             v-if="storeCount.taskDetail.description.length > 0"
           >
-            <p class="desc__title">Description</p>
+            <div class="desc__nav">
+              <p class="desc__title">Description</p>
+
+
+            </div>
             <p class="description">{{ storeCount.taskDetail.description }}</p>
           </div>
           <div
@@ -270,7 +274,8 @@
             v-if="storeCount.taskDetail.tempSubTasks.length > 0"
           >
             <p class="subTaskLength">
-              Subtasks ({{storeCount.taskDetail.doneSubtask.length}} of {{ storeCount.taskDetail.tempSubTasks.length }})
+              Subtasks ({{ storeCount.taskDetail.doneSubtask.length }} of
+              {{ storeCount.taskDetail.tempSubTasks.length }})
             </p>
             <div
               class="subTask"
@@ -310,12 +315,114 @@
                 ><i class="fa-solid fa-check me-2"></i>Apply</PrimaryBtn
               >
             </div>
-            <span class="input__info" v-if="storeCount.validationField.emptyStatus">Can't be empty</span>
-            <span class="input__info" v-if="storeCount.validationField.selectStatus">The same status cannot be selected</span>
+            <span
+              class="input__info"
+              v-if="storeCount.validationField.emptyStatus"
+              >Can't be empty</span
+            >
+            <span
+              class="input__info"
+              v-if="storeCount.validationField.selectStatus"
+              >The same status cannot be selected</span
+            >
           </div>
         </div>
-
         <!--Open Task Info end-->
+
+
+        <!-- Edit Task Info-->
+
+        <div v-if="storeCount.modal.name == 'edit-task'" class="edit-task">
+          <div class="form__control">
+            <label class="form__label">Task Name</label>
+            <input
+              class="form__input"
+              type="text"
+              placeholder="e.g.Take coffe break"
+              v-model="storeCount.taskDetail.taskName"
+            />
+            <span class="input__info" v-if="storeCount.validationField.taskName"
+              >Can't be empty</span
+            >
+          </div>
+          <div class="form__control">
+            <label class="form__label">Description</label>
+            <textarea
+              class="form__textarea"
+              type="text"
+              placeholder="e.g. It's always good to break. This 15 minute break will recharge the batteries a little"
+              v-model="storeCount.taskDetail.description"
+            ></textarea>
+          </div>
+          <div
+            class="form__control"
+            v-if="storeCount.taskDetail.tempSubTasks.length > 0"
+          >
+            <label class="form__label">Subtasks</label>
+            <div
+              class="subtask"
+              v-for="(item, index) in storeCount.taskDetail.tempSubTasks"
+              :key="index"
+            >
+              <input
+                class="form__input"
+                type="text"
+                v-model="item.subTaskValue"
+              />
+              <i
+                class="fa-solid fa-xmark"
+                @click="storeCount.deleteSubTask(index)"
+              ></i>
+            </div>
+            <span class="input__info" v-if="storeCount.validationField.subTask"
+              >Can't be empty</span
+            >
+          </div>
+          <PrimaryBtn
+            buttonWidth="100%"
+            background="var(--white)"
+            color="var(--primary)"
+            @click="storeCount.addNewSubTask"
+            ><i class="fa-solid fa-plus me-2"></i> Add New Subtask</PrimaryBtn
+          >
+
+          <PrimaryBtn
+            buttonWidth="100%"
+            class="mb-0"
+            @click="storeCount.editTask()"
+          >
+            Save Changes</PrimaryBtn
+          >
+        </div>
+
+        <!-- Edit Task Info-->
+
+        <!-- Delete Task Info-->
+        <div v-if="storeCount.modal.name == 'delete-task'" class="delete-task">
+          <p class="deleteTaskInfo">
+            Are you sure you want to delete this task and its subtasks? <br />
+            <span>This action cannot be reversed.</span>
+          </p>
+          <div class="btnsGroup">
+            <PrimaryBtn
+              buttonWidth="100%"
+              background="var(--red)"
+              color="var(--white)"
+              @click="storeCount.deleteTask"
+            >
+              Delete</PrimaryBtn
+            >
+            <PrimaryBtn
+              buttonWidth="100%"
+              background="var(--primary)"
+              color="var(--white)"
+              @click="storeCount.cancelAction()"
+            >
+              Cancel</PrimaryBtn
+            >
+          </div>
+        </div>
+        <!-- Delete Task Info-->
       </template>
     </Modal>
 
@@ -570,10 +677,22 @@ const router = useRouter(); // get reference to our vue router
 .open-task {
   .description__container {
     margin-bottom: 30px;
-    .desc__title {
-      color: var(--grey);
-      font-weight: 500;
+    .desc__nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 10px;
+
+      i {
+        color: var(--white);
+        cursor: pointer;
+      }
+      .desc__title {
+        color: var(--grey);
+        font-weight: 500;
+        margin-bottom: 0px;
+      }
+      
     }
     .description {
       color: var(--white);
@@ -605,12 +724,12 @@ const router = useRouter(); // get reference to our vue router
         font-weight: 700;
         font-size: 16px;
       }
-      .form-check-input{
+      .form-check-input {
         border-radius: 0;
         box-shadow: none;
-        &:checked{
+        &:checked {
           background-color: var(--primary);
-          border-color: var(--primary)
+          border-color: var(--primary);
         }
       }
     }
@@ -670,6 +789,106 @@ const router = useRouter(); // get reference to our vue router
       font-size: 14px;
       padding: 10px;
     }
+  }
+}
+
+.edit-task {
+  .form__control {
+    margin-bottom: 10px;
+    .form__label {
+      color: var(--white);
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .form__input {
+      width: 100%;
+      height: 40px;
+      border-radius: 8px;
+      padding: 20px;
+      outline: none;
+      font-size: 16px;
+      color: var(--primary);
+      background: none;
+      border: 1px solid var(--border);
+      transition: 0.3s ease;
+      &::placeholder {
+        color: var(--border);
+      }
+      &:focus {
+        border: 1px solid var(--primary);
+      }
+    }
+    .input__info {
+      color: var(--red);
+      font-size: 14px;
+      padding: 10px;
+    }
+    .form__textarea {
+      width: 100%;
+      height: 120px;
+      border-radius: 8px;
+      padding: 20px;
+      outline: none;
+      font-size: 16px;
+      color: var(--primary);
+      background: none;
+      border: 1px solid var(--border);
+      transition: 0.3s ease;
+      resize: none;
+      &::placeholder {
+        color: var(--border);
+      }
+      &:focus {
+        border: 1px solid var(--primary);
+      }
+    }
+    .form__select {
+      width: 100%;
+      height: 40px;
+      padding: 0px 20px;
+      border-radius: 8px;
+      outline: none;
+      font-size: 16px;
+      color: var(--primary);
+      background: none;
+      border: 1px solid var(--border);
+      transition: 0.3s ease;
+      &:focus {
+        border: 1px solid var(--primary);
+      }
+      option {
+        font-size: 14px;
+        background: var(--bg);
+        color: var(--white);
+      }
+    }
+    .subtask {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      i {
+        margin-left: 20px;
+        font-size: 20px;
+        cursor: pointer;
+        color: var(--primary);
+      }
+      // .errorBorder{
+      //   border: 1px solid var(--red) !important;
+      // }
+    }
+  }
+}
+
+.delete-task {
+  .deleteTaskInfo {
+    color: var(--grey);
+    span {
+      color: var(--red);
+    }
+  }
+  .btnsGroup {
+    display: flex;
+    gap: 70px;
   }
 }
 

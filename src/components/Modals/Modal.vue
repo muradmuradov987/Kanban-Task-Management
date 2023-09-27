@@ -10,9 +10,37 @@
         <div class="modal__edit">
           <i
             class="fa-solid fa-pen-to-square"
-            v-if="storeCount.modal.editBtn"
+            @click="storeCount.toggleEditTaskMenu()"
+            v-if="storeCount.modal.name === 'open-task'"
           ></i>
           <i class="fa-solid fa-xmark" @click="storeCount.closeModal"></i>
+
+          <div class="edit__task-menu" v-if="storeCount.showEditTaskMenu">
+            <span
+              class="editTask"
+              @click="
+                storeCount.openModal(
+                  'Edit Task',
+                  'edit-task',
+                  storeCount.taskDetail,
+                  storeCount.tasksColName
+                )
+              "
+              >Edit Task</span
+            >
+            <span
+              class="deleteTask"
+              @click="
+                storeCount.openModal(
+                  'Delete this task?',
+                  'delete-task',
+                  storeCount.taskDetail,
+                  storeCount.tasksColName
+                )
+              "
+              >Delete Task</span
+            >
+          </div>
         </div>
       </div>
       <div class="modal__body">
@@ -69,12 +97,36 @@ const closeBackdrop = (e) => {
       }
       .modal__edit {
         display: flex;
+        position: relative;
         i {
           color: var(--white);
           font-size: 20px;
           margin-left: 20px;
           cursor: pointer;
         }
+        .edit__task-menu {
+        width: 130px;
+        background: var(--bg2);
+        position: absolute;
+        right: 0px;
+        border: 1px solid var(--primary);
+        box-shadow: -1px 1px 10px 1px rgba(102, 96, 195, 0.75);
+        border-radius: 10px;
+        padding: 20px 10px;
+        top: calc(100% + 10px);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 5;
+        .editTask {
+          color: var(--grey);
+          cursor: pointer;
+        }
+        .deleteTask {
+          color: var(--red);
+          cursor: pointer;
+        }
+      }
       }
     }
     .modal__body {

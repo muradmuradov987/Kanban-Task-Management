@@ -4,7 +4,12 @@
     <Logo />
     <h3 class="nav__title">Platform Launch</h3>
     <div class="nav__right">
-      <div v-if="storeCount.allData[storeCount.boardInfo.selectedTabIndex]?.taskRow.length > 0">
+      <div
+        v-if="
+          storeCount.allData[storeCount.boardInfo.selectedTabIndex]?.taskRow
+            .length > 0
+        "
+      >
         <PrimaryBtn
           v-if="storeCount.allData.length > 0"
           class="addTaskBtn"
@@ -36,12 +41,20 @@
         MM
         <div class="profile__menu" v-if="storeCount.showProfileMenu">
           <span class="username">Murad Muradov</span>
-          <RouterLink to="/dashboard"
-            ><i class="fa-solid fa-gear"></i>Settings</RouterLink
-          >
-          <a href="" @click="logOut"
-            ><i class="fa-solid fa-right-from-bracket"></i>Logout</a
-          >
+          <div class="menu__link">
+            <div>
+              <i class="fa-solid fa-gear"></i>
+              <span>Settings</span>
+            </div>
+            <div>
+              <i class="fa-solid fa-info"></i>
+              <span>Info</span>
+            </div>
+            <div @click="logOut">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <span>Logout</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -152,17 +165,23 @@ const logOut = () => {
           font-size: 20px;
           color: var(--primary);
         }
-        a {
-          text-decoration: none;
+        .menu__link {
           padding: 5px 10px;
           display: flex;
-          align-items: center;
-          color: var(--primary);
-          &:hover {
-            color: white;
-          }
-          i {
-            margin-right: 10px;
+          flex-direction: column;
+          gap: 10px;
+          div {
+            display: flex;
+            align-items: center;
+            transition: 0.3s ease;
+            gap: 10px;
+            i {
+              width: 30px;
+              text-align: center;
+            }
+            &:hover {
+              color: white;
+            }
           }
         }
       }
@@ -224,6 +243,7 @@ const logOut = () => {
             margin-bottom: 5px;
             font-size: 16px;
           }
+          
         }
       }
     }
