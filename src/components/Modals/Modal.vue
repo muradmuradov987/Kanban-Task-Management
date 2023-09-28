@@ -58,6 +58,7 @@ const storeCount = useCounterStore(); // get reference to our store
 
 const closeBackdrop = (e) => {
   if (e.target == e.currentTarget) {
+
     storeCount.closeModal();
     storeCount.resetData();
   }

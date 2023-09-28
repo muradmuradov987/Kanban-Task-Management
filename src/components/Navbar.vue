@@ -40,13 +40,13 @@
       <div class="profile" @click="storeCount.toggleProfile">
         MM
         <div class="profile__menu" v-if="storeCount.showProfileMenu">
-          <span class="username">Murad Muradov</span>
+          <span class="username">Username</span>
           <div class="menu__link">
             <div>
               <i class="fa-solid fa-gear"></i>
               <span>Settings</span>
             </div>
-            <div>
+            <div @click="storeCount.openModal('About project', 'info')">
               <i class="fa-solid fa-info"></i>
               <span>Info</span>
             </div>

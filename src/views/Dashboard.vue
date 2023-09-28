@@ -264,8 +264,6 @@
           >
             <div class="desc__nav">
               <p class="desc__title">Description</p>
-
-
             </div>
             <p class="description">{{ storeCount.taskDetail.description }}</p>
           </div>
@@ -328,7 +326,6 @@
           </div>
         </div>
         <!--Open Task Info end-->
-
 
         <!-- Edit Task Info-->
 
@@ -423,6 +420,107 @@
           </div>
         </div>
         <!-- Delete Task Info-->
+
+        <!--Info modal-->
+        <div v-if="storeCount.modal.name == 'info'" class="info">
+          <h3>Kanban Task Management</h3>
+          <p class="info__text">
+            Kanban Task Management is a Vue 3 Composition API website that
+            allows you to manage your tasks using the Kanban methodology.
+          </p>
+          <p class="info__text">
+            When you first enter the site, you will need to log in or create an
+            account. Once you are logged in, you will see a list of your boards.
+            You can create a new board by clicking the
+            <span class="special__info">"Create New Board"</span> button.
+          </p>
+          <p class="info__text">
+            Each board has three columns by default: Todo, Doing, and Done. You
+            can change the names of these columns or add new columns by clicking
+            the <span class="special__info">"Edit Board"</span> button.
+          </p>
+          <p class="info__text">
+            To create a new task, click the
+            <span class="special__info">"Create New Task"</span> button in the
+            upper right corner of the screen. In the new task window, you can
+            enter the name of the task, a description, and subtasks. You can
+            also choose which column the task should be in.
+          </p>
+          <p class="info__text">
+            To view a task in more detail, click on it. This will open a window
+            where you can see the task's description, subtasks, and status. You
+            can also complete subtasks and move the task to other columns by
+            clicking the corresponding buttons.
+          </p>
+          <p class="info__text">
+            You can also drag and drop tasks to move them to other columns.
+          </p>
+          <p class="info__text">
+            To edit or delete a task, click the corresponding buttons in the
+            task's detail window.
+          </p>
+          <p class="info__text title">Features:</p>
+          <ul>
+            <li>Login and user management with Firebase</li>
+            <li>Create, edit, and delete boards</li>
+            <li>Create, edit, and delete tasks</li>
+            <li>Drag and drop tasks to move them to other columns</li>
+            <li>
+              View task details, complete subtasks, and move tasks to other
+              columns
+            </li>
+            <li>Use Vue 3 Composition API, Pinia, and Vite</li>
+            <li>Bootstrap and custom SCSS design</li>
+          </ul>
+          <p class="info__text title">Limitations:</p>
+          <ul>
+            <li>
+              Since the site does not have a backend, all tasks or boards
+              created will be lost when the site is renewed.
+            </li>
+          </ul>
+          <p class="info__text title">Benefits:</p>
+          <ul>
+            <li>
+              Kanban Task Management is a simple and easy-to-use way to manage
+              your tasks.
+            </li>
+            <li>
+              The Vue 3 Composition API and Pinia make it easy to develop and
+              maintain the site.
+            </li>
+            <li>
+              The Bootstrap and custom SCSS design make the site look modern and
+              professional.
+            </li>
+          </ul>
+          <p class="info__text title">Who can use Kanban Task Management?</p>
+          <p class="info__text">
+            Kanban Task Management can be used by anyone who needs to manage
+            their tasks, such as individuals, teams, and businesses. It is
+            especially well-suited for projects that have multiple stages, such
+            as software development, product development, and marketing
+            campaigns.
+          </p>
+          <p class="info__text title">
+            How to get started with Kanban Task Management:
+          </p>
+          <ol>
+            <li>Create an account or log in to the site.</li>
+            <li>Create a new board for your project.</li>
+            <li>Create new tasks and add them to the board.</li>
+            <li>
+              Drag and drop tasks to move them through the different stages of
+              your project.
+            </li>
+            <li>
+              View task details, complete subtasks, and move tasks to other
+              columns as needed.
+            </li>
+          </ol>
+          <h5>Created by Murad Muradov</h5>
+        </div>
+        <!--Info modal end-->
       </template>
     </Modal>
 
@@ -692,7 +790,6 @@ const router = useRouter(); // get reference to our vue router
         font-weight: 500;
         margin-bottom: 0px;
       }
-      
     }
     .description {
       color: var(--white);
@@ -892,6 +989,30 @@ const router = useRouter(); // get reference to our vue router
   }
 }
 
+.info {
+  h3 {
+    color: var(--primary);
+    margin-bottom: 20px;
+  }
+  h5{
+    color: var(--primary);
+  }
+  .info__text {
+    color: var(--grey);
+    .special__info {
+      color: var(--primary);
+    }
+  }
+  .title {
+    color: var(--green);
+  }
+  ul,ol {
+    margin-bottom: 20px;
+    li {
+      color: var(--grey);
+    }
+  }
+}
 @media (max-width: 767px) {
   //All Modals
   .add-new-task {

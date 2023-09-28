@@ -49,11 +49,7 @@ export const useCounterStore = defineStore({
       { isTaskChecked: false, subTaskValue: "" },
     ],
   }),
-  getters: {
-    // countTrueValues() {
-    //  this.tempSubTasksLength =  this.taskDetail.tempSubTasks.filter((task) => task.isTaskChecked).length;
-    // },
-  },
+
   actions: {
     openModal(title, name, taskCard, tasksColName) {
       this.modal.show = true;

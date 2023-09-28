@@ -15,7 +15,7 @@
   align-items: center;
   div {
     span {
-      width: 3px;
+      width: 5px;
       height: 25px;
       margin-right: 3px;
       &:nth-child(1) {
