@@ -42,6 +42,7 @@
 
 <script setup>
 import { useCounterStore } from "@/stores/counter";
+import draggable from 'vuedraggable';
 const storeCount = useCounterStore(); // get reference to our store
 
 </script>
