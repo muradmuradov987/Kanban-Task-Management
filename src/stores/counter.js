@@ -51,6 +51,7 @@ export const useCounterStore = defineStore({
   }),
 
   actions: {
+
     openModal(title, name, taskCard, tasksColName) {
       this.modal.show = true;
       this.modal.title = title;
@@ -61,6 +62,7 @@ export const useCounterStore = defineStore({
       this.showProfileMenu = false;
       this.showEditTaskMenu = false;
     },
+    
     closeModal() {
       this.modal.show = false;
       this.modal.title = "";

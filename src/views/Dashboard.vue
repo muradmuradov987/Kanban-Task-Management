@@ -453,9 +453,6 @@
             clicking the corresponding buttons.
           </p>
           <p class="info__text">
-            You can also drag and drop tasks to move them to other columns.
-          </p>
-          <p class="info__text">
             To edit or delete a task, click the corresponding buttons in the
             task's detail window.
           </p>
@@ -464,7 +461,6 @@
             <li>Login and user management with Firebase</li>
             <li>Create, edit, and delete boards</li>
             <li>Create, edit, and delete tasks</li>
-            <li>Drag and drop tasks to move them to other columns</li>
             <li>
               View task details, complete subtasks, and move tasks to other
               columns
@@ -509,10 +505,6 @@
             <li>Create an account or log in to the site.</li>
             <li>Create a new board for your project.</li>
             <li>Create new tasks and add them to the board.</li>
-            <li>
-              Drag and drop tasks to move them through the different stages of
-              your project.
-            </li>
             <li>
               View task details, complete subtasks, and move tasks to other
               columns as needed.
@@ -994,7 +986,7 @@ const router = useRouter(); // get reference to our vue router
     color: var(--primary);
     margin-bottom: 20px;
   }
-  h5{
+  h5 {
     color: var(--primary);
   }
   .info__text {
@@ -1006,7 +998,8 @@ const router = useRouter(); // get reference to our vue router
   .title {
     color: var(--green);
   }
-  ul,ol {
+  ul,
+  ol {
     margin-bottom: 20px;
     li {
       color: var(--grey);
@@ -1055,6 +1048,16 @@ const router = useRouter(); // get reference to our vue router
         border-radius: 8px;
         padding: 10px;
         font-size: 14px;
+      }
+    }
+  }
+  .open-task {
+    .status__container {
+      .form__select {
+        width: 60%;
+      }
+      button {
+        width: 30% !important;
       }
     }
   }
