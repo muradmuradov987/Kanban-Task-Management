@@ -8,9 +8,9 @@
         {{ item.boardName }}
       </h3>
 
-      <div class="row__container">
-        <div v-for="(tasks, index) in item.taskRow" :key="index">
-          <div class="task__column">
+      <div class="row__container" >
+        <div v-for="(tasks, index) in item.taskRow" :key="index" >
+          <div class="task__column" v-auto-animate>
             <p class="col__name">
               <span class="col__status">{{ tasks.colName }}</span>
               <span>({{ tasks.allTaskData.length }})</span>

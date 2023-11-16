@@ -32,7 +32,7 @@
               v-model="storeCount.newTaskInfo.desc"
             ></textarea>
           </div>
-          <div class="form__control" v-if="storeCount.tempSubTasks.length > 0">
+          <div class="form__control" v-auto-animate v-if="storeCount.tempSubTasks.length > 0">
             <label class="form__label">Subtasks</label>
             <div
               class="subtask"
@@ -108,8 +108,8 @@
               >Can't be empty</span
             >
           </div>
-          <div>
-            <div class="form__control">
+          <div >
+            <div class="form__control" v-auto-animate>
               <label
                 class="form__label"
                 v-if="
@@ -354,6 +354,7 @@
           <div
             class="form__control"
             v-if="storeCount.taskDetail.tempSubTasks.length > 0"
+            v-auto-animate
           >
             <label class="form__label">Subtasks</label>
             <div
@@ -517,7 +518,7 @@
     </Modal>
 
     <Navbar />
-    <main>
+    <main >
       <Aside />
       <div class="content">
         <DynamicTabs />

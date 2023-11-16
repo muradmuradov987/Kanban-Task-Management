@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^0.8.1",
     "bootstrap": "^5.3.1",
     "firebase": "^10.1.0",
     "pinia": "^2.1.4",

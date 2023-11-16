@@ -1,6 +1,6 @@
 <template>
-  <aside v-if="storeCount.showAside">
-    <div class="board__link-container">
+  <aside v-if="storeCount.showAside" >
+    <div class="board__link-container" v-auto-animate>
       <h6 class="board__number">
         ALL BOARDS ({{ storeCount.allData.length }})
       </h6>
