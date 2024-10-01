@@ -80,8 +80,8 @@ const resetValidation = () => {
   validation.value.password = false;
 };
 
-const email = ref("");
-const password = ref("");
+const email = ref("test@kanban.com");
+const password = ref("12345678Aa");
 const inputRef = ref(null);
 let showPassword = ref(false);
 
@@ -98,11 +98,12 @@ const login = () => {
   }
   signInWithEmailAndPassword(getAuth(), email.value, password.value)
     .then((data) => {
-      if (data.user.emailVerified == false) {
-        errMsg.value = "Your email is not verified!";
-      } else {
-        router.push("/dashboard");
-      }
+      router.push("/dashboard");
+      // if (data.user.emailVerified == false) {
+      //   errMsg.value = "Your email is not verified!";
+      // } else {
+      //   router.push("/dashboard");
+      // }
     })
     .catch((err) => {
       switch (err.code) {
